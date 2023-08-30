@@ -24,11 +24,6 @@ def save_yolo_annotations(annotation_list, image_width, image_height, output_pat
 # Define image dimensions
 image_width = 400
 image_height = 400
-name = 'conjunction_search_'
-# Define objects
-objects = {'green': 'circle',
-           'red': 'square',
-           'blue': 'triangle'}
 
 # Define number of images to generate
 num_images = 100
@@ -41,7 +36,7 @@ object_size = 30
 # Define the target
 target_color = 'green'
 target_shape = 'square'
-
+name = 'feature_search_'
 # Create the dataset
 for i in range(num_images):
     x = 0
@@ -53,14 +48,13 @@ for i in range(num_images):
 
     # Generate shapes
     for idx in range(num_distractors + 1):
-        object_color = random.choice(list(objects.keys()))
-        object_shape = objects[object_color]
+        object_color = 'green'
+        object_shape = 'circle'
         if idx == target_idx:
             object_color = target_color
-            object_shape = target_shape
+            object_shape = target_shape     
             annotation = [[0, int(object_x + object_size/2), int(object_y + object_size/2), object_size, object_size]]
             save_yolo_annotations(annotation, image_width, image_height, f"Labels\\{name}{i}.txt")
-
         object_x = x
         object_y = y
         
@@ -73,7 +67,7 @@ for i in range(num_images):
             print('y', y)
     
 
-        
+
         if object_shape == 'circle':
             draw.ellipse((object_x, object_y, object_x + object_size, object_y + object_size), fill=object_color)
         elif object_shape == 'square':
@@ -85,3 +79,5 @@ for i in range(num_images):
     image.save(f"Conjunction Search Images\\{name}{i}.png")
 
 print("Dataset generation complete.")
+
+
