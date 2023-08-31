@@ -1,5 +1,5 @@
 import base64
-from flask import Flask, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import uuid
@@ -52,23 +52,35 @@ def get_data(index):
         "height": height
     }
     return data
-    
 
-@app.route('/get-info-form', methods=['GET'])
+@app.route('/')
+def index():
+    # Store data in MongoDB
+    return render_template('index.html')
+
+@app.route('/get-info-form', methods=['POST'])
 def get_info_form():
-    user_id = session.get('user_id')
-    if user_id is None:
-        return jsonify({"message": "Session expired or not started."})
-    
-    index = session.get('index', 0)
-    # Other processing...
-    return jsonify({"formItems": sample_form_items, "user_id": user_id, "index": index})
-
-@app.route('/game/begin', methods=['GET'])
-def game_begin():
     user_id = generate_unique_user_id()  # Generate a unique user ID
     session['user_id'] = user_id
     session['index'] = 0
+    
+    # Other processing...
+    data = request.json
+    age = data.get('age')
+    sex = data.get('sex')
+    full_name = data.get('full_name')
+
+    # Store response data in MongoDB
+    response_data = {
+        "user_id": user_id,
+        "age": age,
+        "sex": sex,
+        "full_name": full_name
+    }
+    responses_collection.insert_one(response_data)
+
+@app.route('/game/begin', methods=['GET'])
+def game_begin():
     # Other processing...
     next_image = get_data(session["index"])
     return jsonify(next_image)
