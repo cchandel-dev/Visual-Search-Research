@@ -1,105 +1,72 @@
+from flask import Flask, request, jsonify, session
+from pymongo import MongoClient
 
-from flask import Flask, render_template, request, jsonify, redirect
-import requests
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-import hashlib
-import base64
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 
+# Set up MongoDB connection
+client = MongoClient("mongodb://localhost:27017/")
+db = client["your_database_name"]
+responses_collection = db["responses"]
 
-#MongoDB user permissions chaged to modify all databases
-uri = "mongodb+srv://Brain3DVizMember:9GyKqp4b9blclzqJ@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-counter = 0
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    # print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    pass
-    # print(e)
-db = client['tinyURL-experimental'] #Select the database
-cl = db['test'] #Select the collection name
+sample_form_items = [
+    {"value": "Name", "type": "text"},
+    {"value": "Age", "type": "number"},
+    {"value": "Gender", "type": "select", "options": ["Male", "Female", "Other"]}
+]
 
-app = Flask(__name__, static_url_path = '/static')
-
-@app.route('/')
-def index():
-    # Store data in MongoDB
-    cl.insert_one({'long_link': 'John', 'short_link': 'Smith'})
-    return render_template('index.html')
-
-@app.route('/your-page', methods=['POST'])
-def log_enter():
-    if request.method == 'POST':
-        # Perform your desired action here
-        # For example, log the Enter keypress
-        print("Enter key was pressed!")
-    return 'Action completed'
-
-@app.route('/process', methods=['POST'])
-def process():
-    data = request.get_json()
-    link = data.get('input')
-    if link:
-        try:
-            response = requests.head(link)
-            if response.status_code == requests.codes.ok:
-                response = encode(link) #encode called from here
-            else:
-                response = 'Link is not valid'
-        except requests.exceptions.RequestException:
-            response = 'Link is not valid'
-    else:
-        response = 'No link provided'
-
-    # Process the input value as needed
-    # Perform any necessary calculations or operations
-
-    # Create a response JSON with the output
-    response = {'output': response}
-
-    return jsonify(response)
+sample_game_data = {
+    "image": "base64_encoded_image_data",
+    "posY": 10,
+    "posX": 20,
+    "width": 100,
+    "height": 150
+}
 
 
-# Define a route for short URLs
-@app.route('/<short_url>')
-def redirect_to_original_url(short_url):
-    # Query the collection to check if the string exists
-    result = cl.find_one({"short_link": short_url})
-    if result is not None:
-        return redirect(result["long_link"])
-    else:
-        return 'Link is not valid'
+@app.route('/get-info-form', methods=['GET'])
+def get_info_form():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({"message": "Session expired or not started."})
+    
+    index = session.get('index', 0)
+    # Other processing...
+    return jsonify({"formItems": sample_form_items, "user_id": user_id, "index": index})
 
-def encode(link):
-    # String to search for
+@app.route('/game/begin', methods=['GET'])
+def game_begin():
+    user_id = generate_unique_user_id()  # Generate a unique user ID
+    session['user_id'] = user_id
+    session['index'] = 0
+    # Other processing...
+    return jsonify(sample_game_data)
 
-    # Query the collection to check if the string exists
-    result = cl.find_one({"long_link": link})
+@app.route('/game/next', methods=['POST'])
+def game_next():
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({"message": "Session expired or not started."})
 
-    if result is not None:
-        short_link = 'www.smallurl.ca/' + result["short_link"]
-        return short_link
-    else:
-        short_link = generate_unique_string(link)
-        cl.insert_one({'long_link': link, 'short_link': short_link})
-        return 'www.smallurl.ca/' + short_link
+    data = request.json
+    time = data.get('time')
+    num_of_errors = data.get('numOfErrors')
+    user_info = data.get('userInfo')
+    
+    # Store response data in MongoDB
+    response_data = {
+        "user_id": user_id,
+        "index": session['index'],
+        "time": time,
+        "numOfErrors": num_of_errors,
+        "userInfo": user_info
+    }
+    responses_collection.insert_one(response_data)
 
-
-def generate_unique_string(input_string):
-    # Hash the input string using SHA-256
-    hashed = hashlib.sha256(input_string.encode()).digest()
-
-    # Take the first 6 bytes of the hash and encode it in base64
-    encoded = base64.b64encode(hashed[:6]).decode()
-
-    # Take the first 7 characters of the encoded string
-    unique_string = encoded[:7]
-
-    return unique_string
-
+    # Update index
+    session['index'] += 1
+    
+    return jsonify(sample_game_data)
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug=True)
