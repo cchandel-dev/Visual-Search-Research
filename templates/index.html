@@ -1,11 +1,189 @@
-<!doctype html>
-<html lang="en" data-critters-container>
-<head>
-  <meta charset="utf-8">
-  <title>Reaction Time Evaluator</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-<body>
-</body>
-</html>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>URL Shortener</title>
+        <link rel="icon" type="image/png" href="/static/favicon.png">
+        <link rel="stylesheet" type="text/css" href="../static/stylesheet.css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    </head>
+    <body onload="onLoad()">
+        <header>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+            <nav class="nav-myClass">
+                <ul id="nav_bar">
+                    <li class="nav-links" id="gmail">
+                        <p>Contributors:</p>
+                    <li class="nav-links">
+                        <a href="https://www.linkedin.com/in/chandan-chandel/">Chandan</a>
+                    </li>
+                    <li class="nav-links">
+                        <a href="https://www.linkedin.com/in/connorburgess1/">Connor</a>
+                    </li>
+                    <li class="nav-links">
+                        <a href="https://www.linkedin.com/in/matthew-peck-7019161a2/">Matthew</a>
+                    </li>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+<!-- FORM SEARCH -->
+<div class="form">
+    
+    <form>
+        <img  src="/static/logo.png" alt="Small URL Text in blue with angular logo to the left">
+        <br>
+        <!--<label for="form-search"></label>-->
+        <br>
+        <input class="input_style" type="text" id="inputBox" placeholder="Enter long link here..." onkeydown="return captureEnter(event)">
+    </form>
+    <div class="buttons">
+        <button id="masterbutton" class="button_style" type="submit" onclick="handleEnterClick()">Shorten the Link</button>
+    </div>
+</div>
+<!-- BUTTONS -->
+
+<!-- LABEL-->
+<!--<div class="container">
+    <label id="outputLabel" class="text"></label>
+</div>
+    <button type=button onclick="copyToClipboard()">Copy to Clipboard</button>-->
+<!--DATA HANDLING -->
+
+
+<script>
+    function captureEnter(event) {
+        console.log("got into the Capture Event.");
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default form submission
+            document.querySelector('form').submit(); // Trigger form submission
+            console.log("got into the if statement.");
+        }
+    }
+</script>
+
+<script>
+    function copyToClipboard() {
+        let val = document.getElementById("inputBox");
+        /*const selBox = document.createElement('textarea');
+        selBox.style.position = 'fixed';
+        selBox.style.left = '0';
+        selBox.style.top = '0';
+        selBox.style.opacity = '0';
+        selBox.value = val;
+        document.body.appendChild(selBox);
+        selBox.focus();
+        selBox.select();*/
+        console.log(val.value);
+        val.focus();
+        val.select();
+        document.execCommand('copy');
+        //document.body.removeChild(selBox);
+        alert('text copied to clipboard');
+    }
+    var state = {
+        'msg': 'Hello',
+        'name': 'Chandan'
+    };
+    var data = {
+        "browser": "",
+        "ip": "",
+        "location": "",
+        "OS": "",
+        "device": "",
+        "startTime": "",
+        "endTime": ""
+    };
+
+    function handleEnterClick() {
+        var inputBox = document.getElementById("inputBox");
+        var outputLabel = document.getElementById("outputLabel");
+        var myButton = document.getElementById("masterbutton");
+        var inputValue = inputBox.value;
+
+        // Check if input is a valid link
+
+        if (state.hasOwnProperty(inputValue)) {
+            outputLabel.innerText = state[inputValue];
+        } else {
+
+            // Make a call to your Flask backend
+            fetch('/process', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    input: inputValue
+                })
+            }).then(response=>response.json()).then(data=>{
+                inputBox.value = data.output;
+            }
+            ).catch(error=>{
+                console.error('Error:', error);
+            }
+            );
+
+            //inputBox.value = "";
+            myButton.innerHTML = "Copy to Clipboard";
+            myButton.onclick = function () { copyToClipboard(); };
+        }
+    }
+
+    function onLoad() {
+
+        //get users browser, ip, location, OS, and device and store in JSON
+        // get users browser
+        fetch('https://api.ipify.org?format=json').then(response=>response.json()).then(data=>{
+            updateData('ip', data.ip);
+        }
+        ).catch(error=>{
+            console.error('Error:', error);
+        }
+        );
+
+        //get users location
+        fetch('https://ipapi.co/json/').then(response=>response.json()).then(data=>{
+            updateData('location', data.city);
+        }
+        ).catch(error=>{
+            console.error('Error:', error);
+        }
+        )
+
+        //get users OS
+        updateData('OS', navigator.platform);
+
+        //get users device
+        updateData('device', navigator.userAgent);
+
+        //get start time
+        updateData('startTime', new Date());
+
+        console.log(data);
+    }
+    ;function updateData(field, value) {
+        if (data.hasOwnProperty(field)) {
+            data[field] = value;
+        }
+    }
+    /* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+    function myFunction() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown menu if the user clicks outside of it
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+</body></html>
