@@ -54,7 +54,7 @@ def get_data(index):
         # }
         return 'Image found'
     else:
-        return "Couldn't find the following file Images/image{index}.jpg"
+        return "Couldn't find the following file Images/image2.jpg"
 
 @app.route('/')
 def index():
