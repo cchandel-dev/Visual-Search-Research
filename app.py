@@ -38,7 +38,7 @@ def generate_unique_user_id():
 def get_data(index):
     with open("Dataset/Images/image{index}.jpg", "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    with open("Dataset/Labels/annotations{index}.txt", 'r') as file:
+    with open("Dataset/Labels/image{index}.txt", 'r') as file:
         line = file.read().split()
         x_center = float(line[1]) * IMAGE_WIDTH
         y_center = float(line[2]) * IMAGE_HEIGHT
@@ -82,15 +82,13 @@ def get_info_form():
 @app.route('/game/begin', methods=['GET'])
 def game_begin():
     # Other processing...
-    return 'Hello'
-    # next_image = get_data(session["index"])
-    # return jsonify(next_image)
-
+    next_image = get_data(session["index"])
+    return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
 def test():
     # Other processing...
-    return 'Hello'
+    return jsonify('Hello')
 
 @app.route('/game/next', methods=['POST'])
 def game_next():
