@@ -85,11 +85,6 @@ def game_begin():
     next_image = get_data(session["index"])
     return jsonify(next_image)
 
-@app.route('/test', methods=['GET'])
-def game_begin():
-    # Other processing...
-    return 'Hello'
-
 
 @app.route('/test/begin', methods=['GET'])
 def game_begin():
