@@ -70,7 +70,7 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_color = target_color
             object_shape = target_shape 
             annotation = [[0, int(object_x + OBJECT_SIZE/2), int(object_y + OBJECT_SIZE/2), OBJECT_SIZE, OBJECT_SIZE]]
-            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"Labels\\{name} {data_number}.txt")
+            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"Labels\\image{data_number}.txt")
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
 
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):
@@ -79,7 +79,7 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_y += SPACING + OBJECT_SIZE
             object_x = SPACING/2
     # Save the image
-    image.save(f"Images\\{name} {data_number}.png")
+    image.save(f"Images\\image{data_number}.png")
 
 #sys.argv[1] is 'conjuntion' or 'feature' default is feature
 #sys.argv[2] is target shape default is 'square'

@@ -1,18 +1,38 @@
 import base64
 from flask import Flask, request, jsonify, session
-from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import uuid
+import time
+import random
+import string
+
+uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+#select the specific database and the collection
+db = client["Reaction-Time"]
+responses_collection = db["responses"]
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-
-# Set up MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
-db = client["your_database_name"]
-responses_collection = db["responses"]
+#app.secret_key = 'your_secret_key'
 
 # CONST variables
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 400
+
+#generate unique user id
+def generate_unique_user_id():
+    timestamp = str(int(time.time() * 1000))  # Current timestamp in milliseconds
+    random_chars = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    unique_id = f"{timestamp}_{random_chars}"
+    return unique_id
 
 # get image and annotation data
 def get_data(index):
