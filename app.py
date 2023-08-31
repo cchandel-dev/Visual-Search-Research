@@ -86,8 +86,8 @@ def game_begin():
     return jsonify(next_image)
 
 
-@app.route('/test/begin', methods=['GET'])
-def game_begin():
+@app.route('/test', methods=['GET'])
+def test():
     # Other processing...
     return 'Hello'
 
