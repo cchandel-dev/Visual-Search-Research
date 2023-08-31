@@ -7,20 +7,20 @@ import time
 import random
 import string
 
-uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
-#select the specific database and the collection
-db = client["Reaction-Time"]
-responses_collection = db["responses"]
+# uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+# # Create a new client and connect to the server
+# client = MongoClient(uri, server_api=ServerApi('1'))
+# # Send a ping to confirm a successful connection
+# try:
+#     client.admin.command('ping')
+#     print("Pinged your deployment. You successfully connected to MongoDB!")
+# except Exception as e:
+#     print(e)
+# #select the specific database and the collection
+# db = client["Reaction-Time"]
+# responses_collection = db["responses"]
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path = '/static')
 #app.secret_key = 'your_secret_key'
 
 # CONST variables
@@ -77,7 +77,7 @@ def get_info_form():
         "sex": sex,
         "full_name": full_name
     }
-    responses_collection.insert_one(response_data)
+    #responses_collection.insert_one(response_data)
 
 @app.route('/game/begin', methods=['GET'])
 def game_begin():
@@ -104,7 +104,7 @@ def game_next():
         "numOfErrors": num_of_errors,
         "userInfo": user_info
     }
-    responses_collection.insert_one(response_data)
+    #responses_collection.insert_one(response_data)
 
     # Update index
     session['index'] += 1
