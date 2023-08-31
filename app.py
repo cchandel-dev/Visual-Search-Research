@@ -83,7 +83,7 @@ def get_info_form():
     }
     #responses_collection.insert_one(response_data)
 
-@app.route('/game/begin', methods=['GET'])
+@app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...
     next_image = get_data(session["index"])
