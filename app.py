@@ -1,4 +1,4 @@
-import base64
+import base64, os
 from flask import Flask, render_template, request, jsonify, session
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -13,7 +13,7 @@ import string
 # # Send a ping to confirm a successful connection
 # try:
 #     client.admin.command('ping')
-#     print("Pinged your deployment. You successfully connected to MongoDB!")
+#     print("Pinged your deployment.`` You successfully connected to MongoDB!")
 # except Exception as e:
 #     print(e)
 # #select the specific database and the collection
@@ -36,22 +36,25 @@ def generate_unique_user_id():
 
 # get image and annotation data
 def get_data(index):
-    with open("/static/Images/image{index}.jpg", "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    with open("/static/Labels/image{index}.txt", 'r') as file:
-        line = file.read().split()
-        x_center = float(line[1]) * IMAGE_WIDTH
-        y_center = float(line[2]) * IMAGE_HEIGHT
-        width = float(line[3]) * IMAGE_WIDTH
-        height = float(line[4]) * IMAGE_HEIGHT
-    data = {
-        "image": encoded_string,
-        "posY": y_center,
-        "posX": x_center,
-        "width": width,
-        "height": height
-    }
-    return data
+    if  os.path.isfile("Images/image{index}.jpg"):
+        with open("Images/image{index}.jpg", "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+        with open("Labels/image{index}.txt", 'r') as file:
+            line = file.read().split()
+            x_center = float(line[1]) * IMAGE_WIDTH
+            y_center = float(line[2]) * IMAGE_HEIGHT
+            width = float(line[3]) * IMAGE_WIDTH
+            height = float(line[4]) * IMAGE_HEIGHT
+        data = {
+            "image": encoded_string,
+            "posY": y_center,
+            "posX": x_center,
+            "width": width,
+            "height": height
+        }
+        return data
+    else:
+        return "Couldn't find Images/image{index}.jpg"
 
 @app.route('/')
 def index():
