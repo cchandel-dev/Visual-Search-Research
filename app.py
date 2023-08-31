@@ -36,7 +36,7 @@ def generate_unique_user_id():
 
 # get image and annotation data
 def get_data(index):
-    if  os.path.isfile("Images\image2.png"):
+    if  os.path.isfile("Images\\image2.png"):
         # with open("Images/image0.png", "rb") as image_file:
         #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
         # with open("Labels/image0.txt", 'r') as file:
@@ -54,7 +54,7 @@ def get_data(index):
         # }
         return 'Image found'
     else:
-        return "Couldn't find the following file Images/image2.jpg"
+        return "Couldn't find the following file Images/image2.png"
 
 @app.route('/')
 def index():
