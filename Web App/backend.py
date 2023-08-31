@@ -1,3 +1,4 @@
+import base64
 from flask import Flask, request, jsonify, session
 from pymongo import MongoClient
 
@@ -9,20 +10,29 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client["your_database_name"]
 responses_collection = db["responses"]
 
-sample_form_items = [
-    {"value": "Name", "type": "text"},
-    {"value": "Age", "type": "number"},
-    {"value": "Gender", "type": "select", "options": ["Male", "Female", "Other"]}
-]
+# CONST variables
+IMAGE_WIDTH = 400
+IMAGE_HEIGHT = 400
 
-sample_game_data = {
-    "image": "base64_encoded_image_data",
-    "posY": 10,
-    "posX": 20,
-    "width": 100,
-    "height": 150
-}
-
+# get image and annotation data
+def get_data(index):
+    with open("Dataset/Images/image{index}.jpg", "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    with open("Dataset/Labels/annotations{index}.txt", 'r') as file:
+        line = file.read().split()
+        x_center = float(line[1]) * IMAGE_WIDTH
+        y_center = float(line[2]) * IMAGE_HEIGHT
+        width = float(line[3]) * IMAGE_WIDTH
+        height = float(line[4]) * IMAGE_HEIGHT
+    data = {
+        "image": encoded_string,
+        "posY": y_center,
+        "posX": x_center,
+        "width": width,
+        "height": height
+    }
+    return data
+    
 
 @app.route('/get-info-form', methods=['GET'])
 def get_info_form():
@@ -40,7 +50,8 @@ def game_begin():
     session['user_id'] = user_id
     session['index'] = 0
     # Other processing...
-    return jsonify(sample_game_data)
+    next_image = get_data(session["index"])
+    return jsonify(next_image)
 
 @app.route('/game/next', methods=['POST'])
 def game_next():
@@ -66,7 +77,9 @@ def game_next():
     # Update index
     session['index'] += 1
     
-    return jsonify(sample_game_data)
+    next_image = get_data(session["index"])
+
+    return jsonify(next_image)
 
 if __name__ == '__main__':
     app.run(debug=True)
