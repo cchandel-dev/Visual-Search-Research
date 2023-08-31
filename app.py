@@ -82,8 +82,9 @@ def get_info_form():
 @app.route('/game/begin', methods=['GET'])
 def game_begin():
     # Other processing...
-    next_image = get_data(session["index"])
-    return jsonify(next_image)
+    return 'Hello'
+    # next_image = get_data(session["index"])
+    # return jsonify(next_image)
 
 
 @app.route('/test', methods=['GET'])
