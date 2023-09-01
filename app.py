@@ -65,7 +65,19 @@ def index():
     # session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
-@app.route('/get-info-form', methods=['POST'])
+@app.route('/get-info-form', methods=['GET'])
+def get_info_form():
+    # Store response data in MongoDB
+    response_data = {
+        formItems: [
+            {value: "Full Name", type: "string"},
+            {value: "Age", type: "number"},
+            {value: "Gender", type: "select", options: ["Male", "Female", "Prefer not to say"]}
+        ]
+    }
+    return jsonify(response_data)
+
+@app.route('/save-form-data', methods=['POST'])
 def get_info_form():    
     # Other processing...
     data = request.json
@@ -82,6 +94,7 @@ def get_info_form():
     }
     #responses_collection.insert_one(response_data)
     return generate_unique_user_id() #use this id for user-id
+
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...session["index"]
