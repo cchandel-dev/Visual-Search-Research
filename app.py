@@ -22,6 +22,8 @@ import string
 # responses_collection = db["responses"]
 
 app = Flask(__name__, static_url_path = '/static')
+# Configure the app to use sessions
+app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 #app.secret_key = 'your_secret_key'
 
@@ -59,7 +61,7 @@ def get_data(index):
 def index():
     # Store data in MongoDB
     # Store session index and user ID
-    # session['index'] = generate_unique_user_id()  # Replace with your session index value
+    session['index'] = 100 #generate_unique_user_id()  # Replace with your session index value
     # session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
