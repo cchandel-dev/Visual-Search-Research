@@ -36,25 +36,22 @@ def generate_unique_user_id():
 
 # get image and annotation data
 def get_data(index):
-    if  os.path.isfile("./static/Labels/image2.txt"):
-        # with open("Images/image0.png", "rb") as image_file:
-        #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-        # with open("Labels/image0.txt", 'r') as file:
-        #     line = file.read().split()
-        #     x_center = float(line[1]) * IMAGE_WIDTH
-        #     y_center = float(line[2]) * IMAGE_HEIGHT
-        #     width = float(line[3]) * IMAGE_WIDTH
-        #     height = float(line[4]) * IMAGE_HEIGHT
-        # data = {
-        #     "image": encoded_string,
-        #     "posY": y_center,
-        #     "posX": x_center,
-        #     "width": width,
-        #     "height": height
-        # }
-        return 'Image found'
-    else:
-        return "Couldn't find the following file \\Labels\\image2.txt"
+    with open("Images/image0.png", "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    with open("Labels/image0.txt", 'r') as file:
+        line = file.read().split()
+        x_center = float(line[1]) * IMAGE_WIDTH
+        y_center = float(line[2]) * IMAGE_HEIGHT
+        width = float(line[3]) * IMAGE_WIDTH
+        height = float(line[4]) * IMAGE_HEIGHT
+    data = {
+        "image": encoded_string,
+        "posY": y_center,
+        "posX": x_center,
+        "width": width,
+        "height": height
+    }
+    return data
 
 @app.route('/')
 def index():
