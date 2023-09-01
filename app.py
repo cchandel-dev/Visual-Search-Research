@@ -2,6 +2,7 @@ import base64, os
 from flask import Flask, render_template, request, jsonify, session
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from flask_session import Session
 import uuid
 import time
 import random
@@ -21,6 +22,7 @@ import string
 # responses_collection = db["responses"]
 
 app = Flask(__name__, static_url_path = '/static')
+Session(app)
 #app.secret_key = 'your_secret_key'
 
 # CONST variables
@@ -56,14 +58,13 @@ def get_data(index):
 @app.route('/')
 def index():
     # Store data in MongoDB
+    # Store session index and user ID
+    session['index'] = generate_unique_user_id()  # Replace with your session index value
+    session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
 @app.route('/get-info-form', methods=['POST'])
-def get_info_form():
-    user_id = generate_unique_user_id()  # Generate a unique user ID
-    # session['user_id'] = user_id
-    # session['index'] = 0
-    
+def get_info_form():    
     # Other processing...
     data = request.json
     age = data.get('age')
@@ -72,7 +73,7 @@ def get_info_form():
 
     # Store response data in MongoDB
     response_data = {
-        "user_id": user_id,
+        "user_id": session['user_id'],
         "age": age,
         "sex": sex,
         "full_name": full_name
@@ -87,8 +88,8 @@ def game_begin():
     # if 'index' not in session:
     #     session['index'] = 0
     # else:
-    #     session['index'] += 1
-    next_image = get_data(0)
+    session['index'] += 1
+    next_image = get_data(session['index'])
     return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
