@@ -36,7 +36,7 @@ def generate_unique_user_id():
 
 # get image and annotation data
 def get_data(index):
-    if  os.path.isfile("\\Labels\\image2.txt"):
+    if  os.path.isfile("./static/Labels/image2.txt"):
         # with open("Images/image0.png", "rb") as image_file:
         #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
         # with open("Labels/image0.txt", 'r') as file:
