@@ -61,7 +61,7 @@ def get_data(index):
 def index():
     # Store data in MongoDB
     # Store session index and user ID
-    session['index'] = 100 #generate_unique_user_id()  # Replace with your session index value
+    #session['index'] = 100 #generate_unique_user_id()  # Replace with your session index value
     # session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
@@ -81,16 +81,10 @@ def get_info_form():
         "full_name": full_name
     }
     #responses_collection.insert_one(response_data)
-
+    return generate_unique_user_id() #use this id for user-id
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...session["index"]
-    user_id = generate_unique_user_id()  # Generate a unique user ID
-    #session['user_id'] = user_id
-    # if 'index' not in session:
-    #     session['index'] = 0
-    # else:
-    #     print(session['index'])
     next_image = get_data(0)
     return jsonify(next_image)
 
@@ -108,7 +102,8 @@ def game_next():
     data = request.json
     time = data.get('time')
     num_of_errors = data.get('numOfErrors')
-    user_info = data.get('userInfo')
+    user_ID = data.get('user-ID')
+    user_index = data.get('user-index')
     
     # Store response data in MongoDB
     response_data = {
@@ -116,14 +111,15 @@ def game_next():
         "index": session['index'],
         "time": time,
         "numOfErrors": num_of_errors,
-        "userInfo": user_info
+        "user-ID": user_ID,
+        "user-index": user_index
     }
     #responses_collection.insert_one(response_data)
 
     # Update index
-    session['index'] += 1
+    user_index += 1
     
-    next_image = get_data(session["index"])
+    next_image = get_data(user_index)
 
     return jsonify(next_image)
 
