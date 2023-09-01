@@ -72,18 +72,18 @@ def get_info_form():
         formItems: [
             {value: "Full Name", type: "string"},
             {value: "Age", type: "number"},
-            {value: "Gender", type: "select", options: ["Male", "Female", "Prefer not to say"]}
+            {value: "Sex", type: "select", options: ["Male", "Female", "Prefer not to say"]}
         ]
     }
     return jsonify(response_data)
 
 @app.route('/save-form-data', methods=['POST'])
-def get_info_form():    
+def save_form_data():
     # Other processing...
     data = request.json
-    age = data.get('age')
-    sex = data.get('sex')
-    full_name = data.get('full_name')
+    age = data.get('Age')
+    sex = data.get('Sex')
+    full_name = data.get('Full Name')
 
     # Store response data in MongoDB
     response_data = {
