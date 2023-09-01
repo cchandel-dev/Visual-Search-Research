@@ -82,8 +82,8 @@ def get_info_form():
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...session["index"]
-    user_id = generate_unique_user_id()  # Generate a unique user ID
-    session['user_id'] = user_id
+    # user_id = generate_unique_user_id()  # Generate a unique user ID
+    # session['user_id'] = user_id
     # if 'index' not in session:
     #     session['index'] = 0
     # else:
