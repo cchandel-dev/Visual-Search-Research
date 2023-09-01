@@ -59,8 +59,8 @@ def get_data(index):
 def index():
     # Store data in MongoDB
     # Store session index and user ID
-    session['index'] = generate_unique_user_id()  # Replace with your session index value
-    session['user_id'] = 0  # Replace with your user ID value
+    # session['index'] = generate_unique_user_id()  # Replace with your session index value
+    # session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
 @app.route('/get-info-form', methods=['POST'])
