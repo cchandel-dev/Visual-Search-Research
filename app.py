@@ -83,7 +83,7 @@ def get_info_form():
 def game_begin():
     # Other processing...session["index"]
     user_id = generate_unique_user_id()  # Generate a unique user ID
-    session['user_id'] = user_id
+    #session['user_id'] = user_id
     # if 'index' not in session:
     #     session['index'] = 0
     # else:
