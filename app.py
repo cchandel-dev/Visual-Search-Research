@@ -60,7 +60,7 @@ def index():
 
 @app.route('/get-info-form', methods=['POST'])
 def get_info_form():
-    # user_id = generate_unique_user_id()  # Generate a unique user ID
+    user_id = generate_unique_user_id()  # Generate a unique user ID
     # session['user_id'] = user_id
     # session['index'] = 0
     
@@ -88,8 +88,8 @@ def game_begin():
     #     session['index'] = 0
     # else:
     #     session['index'] += 1
-    next_image = get_data(0)
-    return jsonify(next_image)
+    #next_image = get_data(0)
+    return 'Hello' #jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
 def test():
