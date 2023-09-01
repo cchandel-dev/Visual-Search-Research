@@ -82,6 +82,9 @@ def get_info_form():
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...session["index"]
+    user_id = generate_unique_user_id()  # Generate a unique user ID
+    session['user_id'] = user_id
+    session['index'] = 0
     next_image = get_data(session["index"])
     return jsonify(next_image)
 
@@ -90,7 +93,7 @@ def test():
     # Other processing...
     return jsonify('Hello')
 
-@app.route('/game/next', methods=['POST'])
+@app.route('/game-next', methods=['POST'])
 def game_next():
     user_id = session.get('user_id')
     if user_id is None:
