@@ -88,8 +88,8 @@ def game_begin():
     if 'index' not in session:
         session['index'] = 0
     else:
-        session['index'] += 1
-    next_image = get_data(session['index'])
+        print(session['index'])
+    next_image = get_data(0)
     return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
