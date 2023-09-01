@@ -88,8 +88,8 @@ def game_begin():
     #     session['index'] = 0
     # else:
     #     session['index'] += 1
-    n = get_data(0)
-    return 'Hello' #jsonify(next_image)
+    next_image = get_data(0)
+    return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
 def test():
