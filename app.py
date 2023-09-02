@@ -68,13 +68,14 @@ def index():
 @app.route('/get-info-form', methods=['GET'])
 def get_info_form():
     # Store response data in MongoDB
-    # response_data = {
-    #     formItems: [
-    #         {value: "Full Name", type: "string"},
-    #         {value: "Age", type: "number"},
-    #         {value: "Sex", type: "select", options: ["Male", "Female", "Prefer not to say"]}
-    #     ]
-    # }
+    response_data = {
+        "formItems": [
+            {"value": "Full Name", "type": "string"},
+            {"value": "Age", "type": "number"},
+            {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
+        ]
+    }
+
     return jsonify("Hello")
 
 @app.route('/save-form-data', methods=['POST'])
