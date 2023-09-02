@@ -72,6 +72,7 @@ def get_info_form():
         "formItems": [
             {"value": "Full Name", "type": "string"},
             {"value": "Age", "type": "number"},
+            {"value": "School", "type": "string"},
             {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
     }
@@ -84,6 +85,7 @@ def save_form_data():
     data = request.json
     age = data.get('Age')
     sex = data.get('Sex')
+    school = data.get('School')
     full_name = data.get('Full Name')
 
     # Store response data in MongoDB
@@ -112,9 +114,9 @@ def test():
 
 @app.route('/game-next', methods=['POST'])
 def game_next():
-    user_id = session.get('user_id')
-    if user_id is None:
-        return jsonify({"message": "Session expired or not started."})
+    # user_id = session.get('user_id')
+    # if user_id is None:
+    #     return jsonify({"message": "Session expired or not started."})
 
     data = request.json
     time = data.get('time')
@@ -124,7 +126,6 @@ def game_next():
     
     # Store response data in MongoDB
     response_data = {
-        "user_id": user_id,
         "index": session['index'],
         "time": time,
         "numOfErrors": num_of_errors,
