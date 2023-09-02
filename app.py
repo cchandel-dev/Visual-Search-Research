@@ -75,7 +75,7 @@ def get_info_form():
             {value: "Sex", type: "select", options: ["Male", "Female", "Prefer not to say"]}
         ]
     }
-    return jsonify(response_data)
+    return jsonify("Hello")
 
 @app.route('/save-form-data', methods=['POST'])
 def save_form_data():
