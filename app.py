@@ -87,12 +87,12 @@ def save_form_data():
     full_name = data.get('Full Name')
 
     # Store response data in MongoDB
-    response_data = {
-        "user_id": session['user_id'],
-        "age": age,
-        "sex": sex,
-        "full_name": full_name
-    }
+    # response_data = {
+    #     "user_id": session['user_id'],
+    #     "age": age,
+    #     "sex": sex,
+    #     "full_name": full_name
+    # }
     #responses_collection.insert_one(response_data)
     return generate_unique_user_id() #use this id for user-id
 
@@ -100,6 +100,9 @@ def save_form_data():
 def game_begin():
     # Other processing...session["index"]
     next_image = get_data(0)
+
+    ### Add "max_images": 20 to have the threshold be 20 images before the game ends ###
+
     return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
@@ -128,6 +131,8 @@ def game_next():
         "user-ID": user_ID,
         "user-index": user_index
     }
+    ### Add "target": "Blue Triangle" to give indicator ###
+
     #responses_collection.insert_one(response_data)
 
     # Update index
