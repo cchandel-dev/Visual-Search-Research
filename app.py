@@ -107,7 +107,8 @@ def game_begin():
     # Other processing...session["index"]
     next_image = get_data(0)
 
-    ### Add "max_images": 20 to have the threshold be 20 images before the game ends ###
+    next_image["max_images"] = 25 # CHANGE AS NEEDED
+    next_image["target"] = "Red Square" # CHANGE AS NEEDED
 
     return jsonify(next_image)
 
