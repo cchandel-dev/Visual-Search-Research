@@ -108,7 +108,8 @@ def game_begin():
     next_image = get_data(0)
 
     next_image["max_images"] = 25 # CHANGE AS NEEDED
-    next_image["target"] = "Red Square" # CHANGE AS NEEDED
+    next_image["target"] = "Find the Red Square" # CHANGE AS NEEDED
+    next_image["find_position"] = True
 
     return jsonify(next_image)
 
@@ -138,8 +139,14 @@ def game_next():
 
     # Update index
     # user_index += 1
-    
+
     next_image = get_data(user_index)
+
+    if user_index == 11:
+        next_image["target"] = "Is a Red Square Present?"  # CHANGE AS NEEDED
+    if user_index > 10:
+        next_image["find_position"] = True
+        next_image["present"] = True
 
     return jsonify(next_image)
 
