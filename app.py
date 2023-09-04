@@ -72,7 +72,7 @@ def get_info_form():
         "formItems": [
             {"value": "Full Name", "type": "string"},
             {"value": "Age", "type": "number"},
-            {"value": "Email", "type": "email"},
+            {"value": "School", "type": "string"},
             {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
     }
@@ -85,7 +85,7 @@ def save_form_data():
     data = request.json
     age = data.get('Age')
     sex = data.get('Sex')
-    school = data.get('Email')
+    school = data.get('School')
     full_name = data.get('Full Name')
 
     # Store response data in MongoDB
@@ -109,7 +109,7 @@ def game_begin():
 
     next_image["max_images"] = 25 # CHANGE AS NEEDED
     next_image["target"] = "Find the Red Square" # CHANGE AS NEEDED
-    next_image["find_position"] = True # CHANGE AS NEEDED
+    next_image["find_position"] = True
 
     return jsonify(next_image)
 
@@ -142,12 +142,12 @@ def game_next():
 
     next_image = get_data(user_index)
 
-    if user_index == 11: # Give user a new prompt on the 11th question
+    if user_index == 11:
         next_image["target"] = "Is a Red Square Present?"  # CHANGE AS NEEDED
-    if user_index > 10: # Ask user to determine if object is present/absent
+    if user_index > 10:
         next_image["find_position"] = False
         next_image["present"] = True
-    else: # Ask user to simply find the position of the object
+    else:
         next_image["find_position"] = True
 
     return jsonify(next_image)
