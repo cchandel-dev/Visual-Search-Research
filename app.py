@@ -145,7 +145,7 @@ def game_next():
     if user_index == 11:
         next_image["target"] = "Is a Red Square Present?"  # CHANGE AS NEEDED
     if user_index > 10:
-        next_image["find_position"] = True
+        next_image["find_position"] = False
         next_image["present"] = True
 
     return jsonify(next_image)
