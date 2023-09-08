@@ -50,6 +50,7 @@ def get_object_detection_data(index):
         height = float(line[4]) * IMAGE_HEIGHT
     data = {
         "image": encoded_string,
+        "find_position": True,
         "posY": y_center,
         "posX": x_center,
         "width": width,
@@ -67,6 +68,7 @@ def get_classification_data(index):
     data = {
         "image": encoded_string,
         "present": present,
+        "find_position": False
     }
     return data
 
