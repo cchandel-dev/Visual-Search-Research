@@ -38,11 +38,11 @@ def generate_unique_user_id():
     unique_id = f"{timestamp}_{random_chars}"
     return unique_id
 
-# get image and annotation data
-def get_data(index):
-    with open("./static/Images/image{}.png".format(index), "rb") as image_file:
+# get image and annotation object detection data
+def get_object_detection_data(index):
+    with open("./static/object-detection/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    with open("./static/Labels/image{}.txt".format(index), 'r') as file:
+    with open("./static/object-detection/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read().split()
         x_center = float(line[1]) * IMAGE_WIDTH
         y_center = float(line[2]) * IMAGE_HEIGHT
@@ -54,6 +54,19 @@ def get_data(index):
         "posX": x_center,
         "width": width,
         "height": height
+    }
+    return data
+
+# get image and annotation classification data
+def get_classification_data(index):
+    with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
+        line = file.read().split()
+        present = bool(line[1])
+    data = {
+        "image": encoded_string,
+        "present": present,
     }
     return data
 
@@ -72,12 +85,11 @@ def get_info_form():
         "formItems": [
             {"value": "Full Name", "type": "string"},
             {"value": "Age", "type": "number"},
-            {"value": "School", "type": "string"},
             {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
     }
 
-    return jsonify(response_data)
+    return jsonify()
 
 @app.route('/save-form-data', methods=['POST'])
 def save_form_data():
@@ -85,39 +97,34 @@ def save_form_data():
     data = request.json
     age = data.get('Age')
     sex = data.get('Sex')
-    school = data.get('School')
     full_name = data.get('Full Name')
 
     # Store response data in MongoDB
-    # response_data = {
-    #     "user_id": session['user_id'],
-    #     "age": age,
-    #     "sex": sex,
-    #     "full_name": full_name
-    # }
-    #responses_collection.insert_one(response_data)
     response_data = {
-        "user_id": generate_unique_user_id()
+        "user_id": session['user_id'],
+        "age": age,
+        "sex": sex,
+        "full_name": full_name
     }
-
-    return jsonify(response_data)
+    #responses_collection.insert_one(response_data)
+    return generate_unique_user_id() #use this id for user-id
 
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
     # Other processing...session["index"]
-    next_image = get_data(0)
-
-    next_image["max_images"] = 25 # CHANGE AS NEEDED
-    next_image["target"] = "Find the Red Square" # CHANGE AS NEEDED
-    next_image["find_position"] = True
-
+    next_image = get_object_detection_data(0)
     return jsonify(next_image)
+
+@app.route('/test', methods=['GET'])
+def test():
+    # Other processing...
+    return jsonify('Hello')
 
 @app.route('/game-next', methods=['POST'])
 def game_next():
-    # user_id = session.get('user_id')
-    # if user_id is None:
-    #     return jsonify({"message": "Session expired or not started."})
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({"message": "Session expired or not started."})
 
     data = request.json
     time = data.get('time')
@@ -126,29 +133,22 @@ def game_next():
     user_index = data.get('user-index')
     
     # Store response data in MongoDB
-    # response_data = {
-    #     "index": session['index'],
-    #     "time": time,
-    #     "numOfErrors": num_of_errors,
-    #     "user-ID": user_ID,
-    #     "user-index": user_index
-    # }
-    ### Add "target": "Blue Triangle" to give indicator ###
-
+    response_data = {
+        "user_id": user_id,
+        "index": session['index'],
+        "time": time,
+        "numOfErrors": num_of_errors,
+        "user-ID": user_ID,
+        "user-index": user_index
+    }
     #responses_collection.insert_one(response_data)
 
     # Update index
-    # user_index += 1
-
-    next_image = get_data(user_index)
-
-    if user_index == 11:
-        next_image["target"] = "Is a Red Square Present?"  # CHANGE AS NEEDED
-    if user_index > 10:
-        next_image["find_position"] = False
-        next_image["present"] = True
+    user_index += 1
+    if user_index <= 20:
+        next_image = get_object_detection_data(user_index)
     else:
-        next_image["find_position"] = True
+        next_image = get_classification_data(user_index - 20)
 
     return jsonify(next_image)
 

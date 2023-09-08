@@ -26,25 +26,15 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     # Print the number onto the shape
     draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
-def save_yolo_annotations(annotation_list, image_width, image_height, output_path):
+def save_yolo_annotations(annotation, output_path):
     with open(output_path, 'w') as file:
-        for annotation in annotation_list:
-            class_name, x_center, y_center, width, height = annotation
-
-            # Convert coordinates to YOLO format (normalized)
-            x_center /= IMAGE_WIDTH
-            y_center /= IMAGE_HEIGHT
-            width /= IMAGE_WIDTH
-            height /= IMAGE_HEIGHT
-
-            # Get class index based on class name (you need to define this mapping)
-            class_index = class_name
+            present = annotation
 
             # Write the annotation to the file
-            line = f"{class_index} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n"
+            line = f"{present}\n"
             file.write(line)
 
-def generate_image_and_label(target_shape, target_color, data_number, conjunction):
+def generate_image_and_label(target_shape, target_color, data_number, probability, conjunction):
     object_x = SPACING/2
     object_y = SPACING/2
     image = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), "white")
@@ -65,12 +55,15 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             available_shapes = [shape for shape in objects.values() if shape != target_shape] if object_color == target_color else list(objects.values())
             # Choose a new target_shape randomly from the available shapes
             object_shape = random.choice(available_shapes)
-
+        rand = random.random()
         if idx == target_idx:
-            object_color = target_color
-            object_shape = target_shape 
-            annotation = [[0, int(object_x + OBJECT_SIZE/2), int(object_y + OBJECT_SIZE/2), OBJECT_SIZE, OBJECT_SIZE]]
-            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"Labels\\image{data_number}.txt")
+            if rand < probability: 
+                annotation = [1]    
+                object_color = target_color
+                object_shape = target_shape
+            else:
+                annotation = [0]       
+            save_yolo_annotations(annotation, f"static\\classification\\Labels\\image{data_number}.txt")
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
 
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):
@@ -79,15 +72,20 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_y += SPACING + OBJECT_SIZE
             object_x = SPACING/2
     # Save the image
-    image.save(f"Images\\image{data_number}.png")
+    image.save(f"static\\classification\\Images\\image{data_number}.png")
 
 #sys.argv[1] is 'conjuntion' or 'feature' default is feature
 #sys.argv[2] is target shape default is 'square'
 #sys.argv[3] is target color default is 'green'
 #sys.argv[4] is the number of datapoints you would like to generate
+#sys.argv[5] is the number of positive cases you would like to generate
 if __name__ =='__main__':
     conjunction = sys.argv[1] == 'conjunction'
+    positive_num = int(sys.argv[5])
+    total_num = int(sys.argv[4])
+    probability = float(positive_num/total_num)
+    print('probability figure is: ', probability)
     print('Working on generating your data...')
-    for num in range(int(sys.argv[4])):
-        generate_image_and_label(sys.argv[2], sys.argv[3], num, conjunction)
+    for num in range(total_num):
+        generate_image_and_label(sys.argv[2], sys.argv[3], num, probability, conjunction)
     print('Dataset generated.')
