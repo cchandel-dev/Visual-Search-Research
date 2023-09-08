@@ -135,13 +135,12 @@ def game_next():
     user_index = data.get('user-index')
     
     # Store response data in MongoDB
-    # response_data = {
-    #     "user_id": user_id,
-    #     "time": time,
-    #     "numOfErrors": num_of_errors,
-    #     "user-ID": user_ID,
-    #     "user-index": user_index
-    # }
+    response_data = {
+        "time": time,
+        "numOfErrors": num_of_errors,
+        "user-ID": user_ID,
+        "user-index": user_index
+    }
     #responses_collection.insert_one(response_data)
 
     # Update index
