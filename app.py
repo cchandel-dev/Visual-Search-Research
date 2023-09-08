@@ -91,7 +91,7 @@ def get_info_form():
         ]
     }
 
-    return jsonify()
+    return jsonify(response_data)
 
 @app.route('/save-form-data', methods=['POST'])
 def save_form_data():
