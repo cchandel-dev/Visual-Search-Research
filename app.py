@@ -102,14 +102,14 @@ def save_form_data():
     full_name = data.get('Full Name')
 
     # Store response data in MongoDB
-    # response_data = {
-    #     "user_id": session['user_id'],
-    #     "age": age,
-    #     "sex": sex,
-    #     "full_name": full_name
-    # }
+    response_data = {
+        "user_id": generate_unique_user_id(), #use this id for user-id
+        "age": age,
+        "sex": sex,
+        "full_name": full_name
+    }
     #responses_collection.insert_one(response_data)
-    return generate_unique_user_id() #use this id for user-id
+    return jsonify(response_data)
 
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
