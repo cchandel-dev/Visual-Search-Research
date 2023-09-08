@@ -59,17 +59,25 @@ def get_object_detection_data(index):
     return data
 
 # get image and annotation classification data
-def get_classification_data(index):
+def get_classification_data(index, first):
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read().split()
         present = bool(line[1])
-    data = {
-        "image": encoded_string,
-        "present": present,
-        "find_position": False
-    }
+    if first:
+        data = {
+            "image": encoded_string,
+            "present": present,
+            "find_position": False,
+            "target":"Click yes or no if the desired target is present."
+        }
+    else:
+        data = {
+            "image": encoded_string,
+            "present": present,
+            "find_position": False
+        }
     return data
 
 @app.route('/')
@@ -145,10 +153,12 @@ def game_next():
 
     # Update index
     user_index += 1
-    if user_index <= 20:
+    first = True
+    if user_index <= 2:
         next_image = get_object_detection_data(user_index)
     else:
-        next_image = get_classification_data(user_index - 20)
+        next_image = get_classification_data(user_index - 2, first)
+        first = False
 
     return jsonify(next_image)
 
