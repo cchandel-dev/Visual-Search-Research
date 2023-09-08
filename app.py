@@ -151,8 +151,6 @@ def game_next():
     }
     #responses_collection.insert_one(response_data)
 
-
-    first = True
     if user_index <= 2:
         next_image = get_object_detection_data(user_index)
     else:
