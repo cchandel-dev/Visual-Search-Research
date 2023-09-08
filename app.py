@@ -124,9 +124,9 @@ def test():
 
 @app.route('/game-next', methods=['POST'])
 def game_next():
-    user_id = session.get('user_id')
-    if user_id is None:
-        return jsonify({"message": "Session expired or not started."})
+    # user_id = session.get('user_id')
+    # if user_id is None:
+    #     return jsonify({"message": "Session expired or not started."})
 
     data = request.json
     time = data.get('time')
@@ -137,7 +137,6 @@ def game_next():
     # Store response data in MongoDB
     response_data = {
         "user_id": user_id,
-        "index": session['index'],
         "time": time,
         "numOfErrors": num_of_errors,
         "user-ID": user_ID,
