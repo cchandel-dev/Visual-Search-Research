@@ -30,7 +30,7 @@ Session(app)
 # CONST variables
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 400
-
+first = True
 #generate unique user id
 def generate_unique_user_id():
     timestamp = str(int(time.time() * 1000))  # Current timestamp in milliseconds
@@ -151,8 +151,7 @@ def game_next():
     }
     #responses_collection.insert_one(response_data)
 
-    # Update index
-    user_index += 1
+
     first = True
     if user_index <= 2:
         next_image = get_object_detection_data(user_index)
