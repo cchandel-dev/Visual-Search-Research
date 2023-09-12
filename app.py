@@ -62,10 +62,12 @@ def get_classification_data(index, first):
 @app.route('/database-ping')
 def databaseping():
     from pymongo.mongo_client import MongoClient
+    #from pymongo.server_api import ServerApi
+    
     try:
         uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
         # Create a new client and connect to the server
-        client = MongoClient(uri)
+        client = MongoClient(uri)#, server_api=ServerApi('1'))
         client.admin.command('ping')
         x = "Pinged your deployment.`` You successfully connected to MongoDB!"
     except Exception as e:
