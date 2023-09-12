@@ -64,7 +64,7 @@ def get_classification_data(index, first):
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read().split()
-        present = int(line[1]) == 1
+        present = int(line[0]) == 1
     if first:
         data = {
             "image": encoded_string,
