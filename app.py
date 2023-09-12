@@ -64,7 +64,7 @@ def get_classification_data(index, first):
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read().split()
-        present = bool(line[0])
+        present = int(line[1]) == 1
     if first:
         data = {
             "image": encoded_string,
@@ -160,4 +160,5 @@ def game_next():
     return jsonify(next_image)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    get_classification_data(0, True)
