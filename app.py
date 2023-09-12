@@ -154,7 +154,7 @@ def game_next():
     if user_index <= 2:
         next_image = get_object_detection_data(user_index)
     else:
-        next_image = get_classification_data(user_index - 2, first)
+        next_image = get_classification_data(0, first)
         first = False
 
     return jsonify(next_image)
