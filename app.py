@@ -1,6 +1,6 @@
 import base64, os, time, random, string
 from flask import Flask, render_template, request, jsonify
-
+from pymongo.mongo_client import MongoClient
 
 app = Flask(__name__, static_url_path = '/static')
 # Configure the app to use sessions
@@ -9,6 +9,17 @@ app.config['SESSION_TYPE'] = 'filesystem'
 # CONST variables
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 400
+
+
+
+# uri = "mongodb+srv://Brain3DVizMember:<9GyKqp4b9blclzqJ>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+uri = "mongodb+srv://Brain3DVizMember:9GyKqp4b9blclzqJ@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+# Create a new client and connect to the server
+client = MongoClient(uri)
+# point out the collections
+db = client['Reaction-Time']
+users_collection = db['users']
+responses_collection = db['responses']
 
 #generate unique user id
 def generate_unique_user_id():
@@ -61,17 +72,14 @@ def get_classification_data(index, first):
 
 @app.route('/database-ping')
 def databaseping():
-    from pymongo.mongo_client import MongoClient
-    #from pymongo.server_api import ServerApi
-    
-    try:
-        uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-        # Create a new client and connect to the server
-        client = MongoClient(uri)#, server_api=ServerApi('1'))
+    #
+
+    try:        
+        # client.admin.command('ping')
         client.admin.command('ping')
         x = "Pinged your deployment.`` You successfully connected to MongoDB!"
     except Exception as e:
-        x = "you a bitch"
+        x = e.__str__()#"you a bitch"
     return x
 
 @app.route('/')
