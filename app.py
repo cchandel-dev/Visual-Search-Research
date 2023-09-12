@@ -59,10 +59,7 @@ def get_object_detection_data(index):
     return data
 
 # get image and annotation classification data
-@app.route('/test-v3')
-def get_classification_data():
-    index = 0
-    first = True
+def get_classification_data(index, first):
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
@@ -154,12 +151,12 @@ def game_next():
     }
     #responses_collection.insert_one(response_data)
 
-    # if user_index <= 2:
-    #     next_image = get_object_detection_data(user_index)
-    # else:
-    next_image = get_classification_data()#0, first)
-    first = False
-
+    if user_index <= 2:
+        next_image = get_object_detection_data(user_index)
+    elif user_index == 3:
+        next_image = get_classification_data(user_index, True)
+    else:
+        next_image = get_classification_data(user_index, False)
     return jsonify(next_image)
 
 if __name__ == '__main__':
