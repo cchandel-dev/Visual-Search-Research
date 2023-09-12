@@ -1,27 +1,10 @@
-import base64, os
-from flask import Flask, render_template, request, jsonify, session
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-from flask_session import Session
-import uuid
-import time
-import random
-import string
+import base64, os, time, random, string
+from flask import Flask, render_template, request, jsonify
 
-uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-# Create a new client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
-
-#select the specific database and the collection
-db = client["Reaction-Time"]
-responses_collection = db["responses"]
-users_collection = db["userss"]
 
 app = Flask(__name__, static_url_path = '/static')
 # Configure the app to use sessions
 app.config['SESSION_TYPE'] = 'filesystem'
-Session(app)
-#app.secret_key = 'your_secret_key'
 
 # CONST variables
 IMAGE_WIDTH = 400
@@ -78,8 +61,11 @@ def get_classification_data(index, first):
 
 @app.route('/database-ping')
 def databaseping():
-    # Send a ping to confirm a successful connection
+    from pymongo.mongo_client import MongoClient
     try:
+        uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+        # Create a new client and connect to the server
+        client = MongoClient(uri)
         client.admin.command('ping')
         x = "Pinged your deployment.`` You successfully connected to MongoDB!"
     except Exception as e:
