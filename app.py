@@ -60,7 +60,9 @@ def get_object_detection_data(index):
 
 # get image and annotation classification data
 @app.route('/test-v2')
-def get_classification_data(index, first):
+def get_classification_data():
+    index = 0
+    first = True
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
