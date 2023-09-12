@@ -8,18 +8,18 @@ import time
 import random
 import string
 
-# uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-# # Create a new client and connect to the server
-# client = MongoClient(uri, server_api=ServerApi('1'))
-# # Send a ping to confirm a successful connection
-# try:
-#     client.admin.command('ping')
-#     print("Pinged your deployment.`` You successfully connected to MongoDB!")
-# except Exception as e:
-#     print(e)
-# #select the specific database and the collection
-# db = client["Reaction-Time"]
-# responses_collection = db["responses"]
+uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+# Create a new client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment.`` You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+#select the specific database and the collection
+db = client["Reaction-Time"]
+responses_collection = db["responses"]
 
 app = Flask(__name__, static_url_path = '/static')
 # Configure the app to use sessions
@@ -30,7 +30,7 @@ Session(app)
 # CONST variables
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 400
-first = True
+
 #generate unique user id
 def generate_unique_user_id():
     timestamp = str(int(time.time() * 1000))  # Current timestamp in milliseconds
@@ -116,7 +116,7 @@ def save_form_data():
         "sex": sex,
         "full_name": full_name
     }
-    #responses_collection.insert_one(response_data)
+    responses_collection.insert_one(response_data)
     return jsonify(response_data)
 
 @app.route('/game-begin', methods=['GET'])
@@ -132,10 +132,6 @@ def test():
 
 @app.route('/game-next', methods=['POST'])
 def game_next():
-    # user_id = session.get('user_id')
-    # if user_id is None:
-    #     return jsonify({"message": "Session expired or not started."})
-
     data = request.json
     time = data.get('time')
     num_of_errors = data.get('numOfErrors')
@@ -149,7 +145,7 @@ def game_next():
         "user-ID": user_ID,
         "user-index": user_index
     }
-    #responses_collection.insert_one(response_data)
+    responses_collection.insert_one(response_data)
 
     if user_index <= 2:
         next_image = get_object_detection_data(user_index)
@@ -160,5 +156,4 @@ def game_next():
     return jsonify(next_image)
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    get_classification_data(0, True)
+    app.run(debug=True)
