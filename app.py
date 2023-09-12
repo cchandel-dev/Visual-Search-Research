@@ -11,15 +11,11 @@ import string
 uri = "mongodb+srv://Brain3DVizMember:<password>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment.`` You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
+
 #select the specific database and the collection
 db = client["Reaction-Time"]
 responses_collection = db["responses"]
+users_collection = db["userss"]
 
 app = Flask(__name__, static_url_path = '/static')
 # Configure the app to use sessions
@@ -80,12 +76,18 @@ def get_classification_data(index, first):
         }
     return data
 
+@app.route('/database-ping')
+def databaseping():
+    # Send a ping to confirm a successful connection
+    try:
+        client.admin.command('ping')
+        x = "Pinged your deployment.`` You successfully connected to MongoDB!"
+    except Exception as e:
+        x = e
+    return x
+
 @app.route('/')
 def index():
-    # Store data in MongoDB
-    # Store session index and user ID
-    #session['index'] = 100 #generate_unique_user_id()  # Replace with your session index value
-    # session['user_id'] = 0  # Replace with your user ID value
     return render_template('index.html')
 
 @app.route('/get-info-form', methods=['GET'])
@@ -116,7 +118,7 @@ def save_form_data():
         "sex": sex,
         "full_name": full_name
     }
-    responses_collection.insert_one(response_data)
+    users_collection.insert_one(response_data)
     return jsonify(response_data)
 
 @app.route('/game-begin', methods=['GET'])
