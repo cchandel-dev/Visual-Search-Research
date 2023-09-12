@@ -83,7 +83,7 @@ def databaseping():
         client.admin.command('ping')
         x = "Pinged your deployment.`` You successfully connected to MongoDB!"
     except Exception as e:
-        x = e
+        x = "you a bitch"
     return x
 
 @app.route('/')
