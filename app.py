@@ -66,8 +66,8 @@ def get_classification_data():
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
-        line = file.read().split()
-        present = int(line[0]) == 1
+        #line = file.read().split()
+        present = 'present' #int(line[0]) == 1
     if first:
         data = {
             "image": encoded_string,
@@ -157,7 +157,7 @@ def game_next():
     if user_index <= 2:
         next_image = get_object_detection_data(user_index)
     else:
-        next_image = get_classification_data()#user_index - 2, first)
+        next_image = get_classification_data(user_index - 2, first)
         first = False
 
     return jsonify(next_image)
