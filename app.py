@@ -72,14 +72,16 @@ def get_classification_data(index, first):
 
 @app.route('/database-ping')
 def databaseping():
-    #
-
     try:        
-        # client.admin.command('ping')
         client.admin.command('ping')
+        data = {
+            "test_signal": True
+        }
+        users_collection.insert_one(data)
+        responses_collection.insert_one(data)
         x = "Pinged your deployment.`` You successfully connected to MongoDB!"
     except Exception as e:
-        x = e.__str__()#"you a bitch"
+        x = e.__str__()
     return x
 
 @app.route('/')
@@ -144,10 +146,10 @@ def game_next():
         "user-index": user_index
     }
     responses_collection.insert_one(response_data)
-
-    if user_index <= 2:
+    split = 2
+    if user_index <= split:
         next_image = get_object_detection_data(user_index)
-    elif user_index == 3:
+    elif user_index == split + 1:
         next_image = get_classification_data(user_index, True)
     else:
         next_image = get_classification_data(user_index, False)
