@@ -118,9 +118,8 @@ def save_form_data():
     }
 
     try:
-        if 'user_id' in response_data:
-            response_data['user_id'] = str(response_data['user_id'])
         users_collection.insert_one(response_data)
+        response_data.pop('_id', None)
         return jsonify(response_data)
     except Exception as e:
         return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
