@@ -142,7 +142,7 @@ def game_next():
         # "numOfErrors": num_of_errors,
         # "user-index": user_index
     }
-    #responses_collection.insert_one(response_data)
+    responses_collection.insert_one(response_data)
     split = 2
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
