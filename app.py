@@ -138,9 +138,9 @@ def game_next():
     user_index = data.get('user-index')
     # Store response data in MongoDB
     response_data = {
-        # "time": time,
-        # "numOfErrors": num_of_errors,
-        # "user-index": user_index
+        "time": time,
+        "numOfErrors": num_of_errors,
+        "user-index": user_index
     }
     responses_collection.insert_one(response_data)
     split = 2
