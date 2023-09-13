@@ -79,7 +79,7 @@ def databaseping():
         }
         users_collection.insert_one(data)
         responses_collection.insert_one(data)
-        x = "Pinged your deployment.`` You successfully connected to MongoDB!"
+        x = "Pinged your deployment. You successfully connected to MongoDB! Feel free to check MongoDB for collection information"
     except Exception as e:
         x = e.__str__()
     return x
@@ -135,14 +135,11 @@ def game_next():
     data = request.json
     time = data.get('time')
     num_of_errors = data.get('numOfErrors')
-    user_ID = data.get('user-ID')
     user_index = data.get('user-index')
-    
     # Store response data in MongoDB
     response_data = {
         "time": time,
         "numOfErrors": num_of_errors,
-        "user-ID": user_ID,
         "user-index": user_index
     }
     responses_collection.insert_one(response_data)
