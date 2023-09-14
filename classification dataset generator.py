@@ -47,7 +47,7 @@ def generate_image_and_label(target_shape, target_color, data_number, probabilit
             object_shape = random.choice(available_shapes)
         rand = random.random()
         if idx == target_idx:
-            if rand < probability: 
+            if rand <= probability: 
                 annotation = [1]    
                 object_color = target_color
                 object_shape = target_shape

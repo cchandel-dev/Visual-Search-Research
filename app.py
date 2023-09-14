@@ -10,7 +10,18 @@ app.config['SESSION_TYPE'] = 'filesystem'
 IMAGE_WIDTH = 400
 IMAGE_HEIGHT = 400
 
+targets = [
+            'click on the red square',
+            'click on the green square',
+            'click on the red circle',
+            'click on the red square',
 
+            'click "Y" for yes or "N" for no - if there is a green square',
+            'click "Y" for yes or "N" for no - if there is a red circle',
+            'click "Y" for yes or "N" for no - if there is a red square',
+            'click "Y" for yes or "N" for no - if there is a red square',
+    
+]
 
 # uri = "mongodb+srv://Brain3DVizMember:<9GyKqp4b9blclzqJ>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
 uri = "mongodb+srv://Brain3DVizMember:9GyKqp4b9blclzqJ@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
@@ -46,28 +57,36 @@ def get_object_detection_data(index):
         "width": width,
         "height": height
     }
+    if index == 0:
+        data['target'] = targets[4]
+    elif index == 31:
+        data['target'] = targets[5]
+    elif index == 56:
+        data['target'] = targets[6]
+    elif index == 84:
+        data['target'] = targets[7]
     return data
 
 # get image and annotation classification data
-def get_classification_data(index, first):
+def get_classification_data(index):
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read()
         present = int(line[1]) == 1
-    if first:
-        data = {
-            "image": encoded_string,
-            "present": present,
-            "find_position": False,
-            "target":"Click yes or no if the desired target is present."
-        }
-    else:
-        data = {
-            "image": encoded_string,
-            "present": present,
-            "find_position": False
-        }
+    data = {
+        "image": encoded_string,
+        "present": present,
+        "find_position": False
+    }
+    if index == 0:
+        data['target'] = targets[0]
+    elif index == 35:
+        data['target'] = targets[1]
+    elif index == 70:
+        data['target'] = targets[2]
+    elif index == 104:
+        data['target'] = targets[3]
     return data
 
 @app.route('/database-ping')
