@@ -169,13 +169,11 @@ def game_next():
         "user-ID" : user_id
     }
     responses_collection.insert_one(response_data)
-    split = 2
+    split = 139
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
-    elif user_index == split + 1:
-        next_image = get_classification_data(user_index, True)
     else:
-        next_image = get_classification_data(user_index, False)
+        next_image = get_classification_data(user_index - split)
     return jsonify(next_image)
 
 if __name__ == '__main__':
