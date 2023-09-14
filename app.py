@@ -148,7 +148,6 @@ def game_next():
         "numOfErrors": num_of_errors,
         "user-index": user_index,
         "user-ID" : user_id
-
     }
     responses_collection.insert_one(response_data)
     split = 2

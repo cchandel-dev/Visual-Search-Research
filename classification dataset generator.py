@@ -1,16 +1,6 @@
 from telnetlib import X3PAD
 from PIL import Image, ImageDraw
-import random, sys
-
-# Define const variables
-IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 400
-SPACING = 20
-OBJECT_SIZE = 30
-MARGIN = 10
-X_SHAPES = int(IMAGE_WIDTH/(SPACING + OBJECT_SIZE))
-Y_SHAPES = int(IMAGE_HEIGHT/(SPACING + OBJECT_SIZE))
-NUM_SHAPES = X_SHAPES * Y_SHAPES
+import os, random, sys
 
 def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     if object_shape == 'circle':
@@ -79,13 +69,28 @@ def generate_image_and_label(target_shape, target_color, data_number, probabilit
 #sys.argv[3] is target color default is 'green'
 #sys.argv[4] is the number of datapoints you would like to generate
 #sys.argv[5] is the number of positive cases you would like to generate
+#sys.argv[6] is the number of shapes per image
 if __name__ =='__main__':
     conjunction = sys.argv[1] == 'conjunction'
     positive_num = int(sys.argv[5])
     total_num = int(sys.argv[4])
+    NUM_SHAPES = int(sys.argv[6])
     probability = float(positive_num/total_num)
     print('probability figure is: ', probability)
     print('Working on generating your data...')
-    for num in range(total_num):
+    DIR = './static/classification/Images'
+    currLen = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+    for num in range(currLen, total_num +currLen):
         generate_image_and_label(sys.argv[2], sys.argv[3], num, probability, conjunction)
     print('Dataset generated.')
+
+# Define const variables
+IMAGE_WIDTH = 400
+IMAGE_HEIGHT = 400
+MARGIN = 10
+
+NUM_X_SHAPES = NUM_SHAPES ** 0.5
+NUM_Y_SHAPES = NUM_SHAPES ** 0.5
+SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
+SPACING = SPACE_PER_OBJECT * 0.6
+OBJECT_SIZE = SPACE_PER_OBJECT * 0.4
