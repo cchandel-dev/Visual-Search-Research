@@ -15,7 +15,7 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     number_y = object_y + OBJECT_SIZE // 3
     
     # Print the number onto the shape
-    draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
+    #draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
 def save_yolo_annotations(annotation_list, image_width, image_height, output_path):
     with open(output_path, 'w') as file:
@@ -72,6 +72,13 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
     # Save the image
     image.save(f"static\\object-detection\\Images\\image{data_number}.png")
 
+
+# Define const variables
+IMAGE_WIDTH = 400
+IMAGE_HEIGHT = 400
+MARGIN = 10
+
+
 #sys.argv[1] is 'conjuntion' or 'feature' default is feature
 #sys.argv[2] is target shape default is 'square'
 #sys.argv[3] is target color default is 'green'
@@ -80,6 +87,11 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
 if __name__ =='__main__':
     conjunction = sys.argv[1] == 'conjunction'    
     NUM_SHAPES = int(sys.argv[5])
+    NUM_X_SHAPES = NUM_SHAPES ** 0.5
+    NUM_Y_SHAPES = NUM_SHAPES ** 0.5
+    SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
+    SPACING = SPACE_PER_OBJECT * 0.6
+    OBJECT_SIZE = SPACE_PER_OBJECT * 0.4
     print('Working on generating your data...')
     # path joining version for other paths
     DIR = '.\\static\\object-detection\\Images'
@@ -87,15 +99,3 @@ if __name__ =='__main__':
     for num in range(currLen, currLen + int(sys.argv[4])):
         generate_image_and_label(sys.argv[2], sys.argv[3], num, conjunction)
     print('Dataset generated.')
-
-# Define const variables
-IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 400
-MARGIN = 10
-
-
-NUM_X_SHAPES = NUM_SHAPES ** 0.5
-NUM_Y_SHAPES = NUM_SHAPES ** 0.5
-SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
-SPACING = SPACE_PER_OBJECT * 0.6
-OBJECT_SIZE = SPACE_PER_OBJECT * 0.4

@@ -14,7 +14,7 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     number_y = object_y + OBJECT_SIZE // 3
     
     # Print the number onto the shape
-    draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
+    #draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
 def save_yolo_annotations(annotation, output_path):
     with open(output_path, 'w') as file:
@@ -64,17 +64,27 @@ def generate_image_and_label(target_shape, target_color, data_number, probabilit
     # Save the image
     image.save(f"static\\classification\\Images\\image{data_number}.png")
 
+
+# Define const variables
+IMAGE_WIDTH = 400
+IMAGE_HEIGHT = 400
+MARGIN = 10
+
 #sys.argv[1] is 'conjuntion' or 'feature' default is feature
 #sys.argv[2] is target shape default is 'square'
 #sys.argv[3] is target color default is 'green'
 #sys.argv[4] is the number of datapoints you would like to generate
 #sys.argv[5] is the number of positive cases you would like to generate
-#sys.argv[6] is the number of shapes per image
 if __name__ =='__main__':
     conjunction = sys.argv[1] == 'conjunction'
     positive_num = int(sys.argv[5])
     total_num = int(sys.argv[4])
     NUM_SHAPES = int(sys.argv[6])
+    NUM_X_SHAPES = NUM_SHAPES ** 0.5
+    NUM_Y_SHAPES = NUM_SHAPES ** 0.5
+    SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
+    SPACING = SPACE_PER_OBJECT * 0.6
+    OBJECT_SIZE = SPACE_PER_OBJECT * 0.4
     probability = float(positive_num/total_num)
     print('probability figure is: ', probability)
     print('Working on generating your data...')
@@ -84,13 +94,5 @@ if __name__ =='__main__':
         generate_image_and_label(sys.argv[2], sys.argv[3], num, probability, conjunction)
     print('Dataset generated.')
 
-# Define const variables
-IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 400
-MARGIN = 10
 
-NUM_X_SHAPES = NUM_SHAPES ** 0.5
-NUM_Y_SHAPES = NUM_SHAPES ** 0.5
-SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
-SPACING = SPACE_PER_OBJECT * 0.6
-OBJECT_SIZE = SPACE_PER_OBJECT * 0.4
+
