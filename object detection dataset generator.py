@@ -90,8 +90,8 @@ if __name__ =='__main__':
     NUM_X_SHAPES = NUM_SHAPES ** 0.5
     NUM_Y_SHAPES = NUM_SHAPES ** 0.5
     SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
-    SPACING = SPACE_PER_OBJECT * 0.6
-    OBJECT_SIZE = SPACE_PER_OBJECT * 0.4
+    OBJECT_SIZE = 30
+    SPACING = SPACE_PER_OBJECT - OBJECT_SIZE
     print('Working on generating your data...')
     # path joining version for other paths
     DIR = '.\\static\\object-detection\\Images'
