@@ -12,13 +12,13 @@ IMAGE_HEIGHT = 400
 
 targets = [
             'click on the red square',
-            'click on the green square',
             'click on the red circle',
+            'click on the green square',
             'click on the red square',
 
-            'click "Y" for yes or "N" for no - if there is a green square',
-            'click "Y" for yes or "N" for no - if there is a red circle',
             'click "Y" for yes or "N" for no - if there is a red square',
+            'click "Y" for yes or "N" for no - if there is a red circle',
+            'click "Y" for yes or "N" for no - if there is a green square',
             'click "Y" for yes or "N" for no - if there is a red square',
     
 ]
@@ -59,11 +59,11 @@ def get_object_detection_data(index):
     }
     if index == 0:
         data['target'] = targets[0]
-    elif index == 31:
+    elif index == 35:
         data['target'] = targets[1]
-    elif index == 56:
+    elif index == 70:
         data['target'] = targets[2]
-    elif index == 84:
+    elif index == 104:
         data['target'] = targets[3]
     return data
 
@@ -81,11 +81,11 @@ def get_classification_data(index):
     }
     if index == 0:
         data['target'] = targets[4]
-    elif index == 35:
+    elif index == 31:
         data['target'] = targets[5]
-    elif index == 70:
+    elif index == 56:
         data['target'] = targets[6]
-    elif index == 104:
+    elif index == 84:
         data['target'] = targets[7]
     return data
 
