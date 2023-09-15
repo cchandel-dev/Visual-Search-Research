@@ -29,7 +29,7 @@ def generate_image_and_label(target_shape, target_color, data_number, probabilit
     object_y = SPACING/2
     image = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), "white")
     draw = ImageDraw.Draw(image)
-    target_idx = random.randint(0, NUM_SHAPES)
+    target_idx = random.randint(0, NUM_SHAPES - 1)
     objects = {'green': 'circle',
            'red': 'square',
            'blue': 'triangle'}
