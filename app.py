@@ -58,13 +58,13 @@ def get_object_detection_data(index):
         "height": height
     }
     if index == 0:
-        data['target'] = targets[4]
+        data['target'] = targets[0]
     elif index == 31:
-        data['target'] = targets[5]
+        data['target'] = targets[1]
     elif index == 56:
-        data['target'] = targets[6]
+        data['target'] = targets[2]
     elif index == 84:
-        data['target'] = targets[7]
+        data['target'] = targets[3]
     return data
 
 # get image and annotation classification data
@@ -80,13 +80,13 @@ def get_classification_data(index):
         "find_position": False
     }
     if index == 0:
-        data['target'] = targets[0]
+        data['target'] = targets[4]
     elif index == 35:
-        data['target'] = targets[1]
+        data['target'] = targets[5]
     elif index == 70:
-        data['target'] = targets[2]
+        data['target'] = targets[6]
     elif index == 104:
-        data['target'] = targets[3]
+        data['target'] = targets[7]
     return data
 
 @app.route('/database-ping')
