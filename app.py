@@ -147,6 +147,7 @@ def save_form_data():
 def game_begin():
     # Other processing...session["index"]
     next_image = get_object_detection_data(0)
+    next_image["max_images"] = 252
     return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
