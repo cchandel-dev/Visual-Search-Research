@@ -171,7 +171,7 @@ def game_next():
     }
     responses_collection.insert_one(response_data)
     split = 139
-    if user_index > split:
+    if user_index <= split:
         next_image = get_object_detection_data(user_index)
     else:
         next_image = get_classification_data(user_index - split)
