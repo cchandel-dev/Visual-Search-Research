@@ -124,9 +124,9 @@ def get_info_form():
 def save_form_data():
     # Other processing...
     data = request.json
-    age = data.get('Age')
-    sex = data.get('Sex')
-    full_name = data.get('Full Name')
+    age = 10 #data.get('Age')
+    sex = True #data.get('Sex')
+    full_name = 'Douche'#data.get('Full Name')
 
     # Store response data in MongoDB
     response_data = {
