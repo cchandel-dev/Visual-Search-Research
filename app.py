@@ -24,7 +24,7 @@ targets = [
 ]
 
 # uri = "mongodb+srv://Brain3DVizMember:<9GyKqp4b9blclzqJ>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
-uri = "mongodb+srv://Brain3DVizMember:9GyKqp4b9blclzqJ@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
+uri = "mongodb+srv://Brain3DVizMember:NmwJ5IYmUHDmaQNa@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
 # Create a new client and connect to the server
 client = MongoClient(uri)
 # point out the collections
@@ -124,9 +124,9 @@ def get_info_form():
 def save_form_data():
     # Other processing...
     data = request.json
-    age = 10 #data.get('Age')
-    sex = True #data.get('Sex')
-    full_name = 'Douche'#data.get('Full Name')
+    age = data.get('Age')
+    sex = data.get('Sex')
+    full_name = data.get('Full Name')
 
     # Store response data in MongoDB
     response_data = {
