@@ -12,7 +12,7 @@ IMAGE_HEIGHT = 400
 
 targets = [
             'click on the red square',
-            'click on the red circle',
+            'click on the red circle (number of mistakes are tracked)',
             'click on the green square',
             'click on the red square',
 
@@ -57,16 +57,18 @@ def get_object_detection_data(index):
         "width": width,
         "height": height
     }
+
+    if index >= 35 and index < 70:
+        data['check_errors'] = True
+
     if index == 0:
         data['target'] = targets[0]
     elif index == 35:
         data['target'] = targets[1]
-        data['check_errors'] = True
     elif index == 70:
         data['target'] = targets[2]
     elif index == 104:
         data['target'] = targets[3]
-        data['check_errors'] = True
     return data
 
 # get image and annotation classification data
