@@ -58,8 +58,8 @@ def get_object_detection_data(index):
         "height": height
     }
 
-    if index >= 35 and index < 70:
-        data['check_errors'] = True
+    #if index >= 35 and index < 70:
+    data['check_errors'] = True
 
     if index == 0:
         data['target'] = targets[0]
@@ -162,18 +162,8 @@ def test():
 @app.route('/game-next', methods=['POST'])
 def game_next():
     data = request.json
-    time = data.get('time')
-    num_of_errors = data.get('numOfErrors')
     user_index = data.get('user-index')
-    user_id = data.get('user-ID')
-    # Store response data in MongoDB
-    response_data = {
-        "time": time,
-        "numOfErrors": num_of_errors,
-        "user-index": user_index,
-        "user-ID" : user_id
-    }
-    responses_collection.insert_one(response_data)
+    responses_collection.insert_one(data)
     split = 139
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
