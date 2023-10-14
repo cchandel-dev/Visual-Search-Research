@@ -116,7 +116,7 @@ def get_info_form():
     # Store response data in MongoDB
     response_data = {
         "formItems": [
-            {"value": "Full Name", "type": "string"},
+            {"value": "fullish Name", "type": "string"},
             {"value": "Age", "type": "number"},
             {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
