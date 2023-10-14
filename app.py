@@ -116,7 +116,7 @@ def get_info_form():
     # Store response data in MongoDB
     response_data = {
         "formItems": [
-            {"value": "fullish Name", "type": "string"},
+            {"value": "Full Name", "type": "string"},
             {"value": "Age", "type": "number"},
             {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
@@ -140,12 +140,12 @@ def save_form_data():
         "full_name": full_name
     }
 
-    try:
-        users_collection.insert_one(response_data)
-        # response_data.pop('_id', None)
-        return jsonify(response_data)
-    except Exception as e:
-        return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 501
+    # try:
+    users_collection.insert_one(response_data)
+         # response_data.pop('_id', None)
+    return jsonify(response_data)
+    # except Exception as e:
+    #    return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
 
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
