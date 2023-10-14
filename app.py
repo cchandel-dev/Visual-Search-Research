@@ -141,7 +141,7 @@ def save_form_data():
     }
 
     # try:
-    responses_collection.insert_one(response_data)
+    #responses_collection.insert_one(response_data)
          # response_data.pop('_id', None)
     return jsonify(response_data)
     # except Exception as e:
@@ -164,6 +164,7 @@ def game_next():
     data = request.json
     user_index = data.get('user-index')
     responses_collection.insert_one(data)
+    users_collection.insert_one(data)
     split = 139
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
