@@ -145,7 +145,7 @@ def save_form_data():
         # response_data.pop('_id', None)
         return jsonify(response_data)
     except Exception as e:
-        return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
+        return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 501
 
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
