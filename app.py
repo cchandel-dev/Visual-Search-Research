@@ -141,7 +141,7 @@ def save_form_data():
     }
 
     try:
-        #users_collection.insert_one(response_data)
+        users_collection.insert_one(response_data)
         # response_data.pop('_id', None)
         return jsonify(response_data)
     except Exception as e:
