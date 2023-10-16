@@ -128,21 +128,21 @@ def get_info_form():
 def save_form_data():
     # Other processing...
     data = request.json
-    # age = data.get('Age')
-    # sex = data.get('Sex')
-    # full_name = data.get('Full Name')
+    age = data.get('Age')
+    sex = data.get('Sex')
+    full_name = data.get('Full Name')
 
     # Store response data in MongoDB
-    # response_data = {
-    #     "user_id": generate_unique_user_id(), #use this id for user-id
-    #     "age": age,
-    #     "sex": sex,
-    #     "full_name": full_name
-    # }
+    response_data = {
+        "user_id": generate_unique_user_id(), #use this id for user-id
+        "age": age,
+        "sex": sex,
+        "full_name": full_name
+    }
     #data["user_id"] = generate_unique_user_id()
     users_collection.insert_one(data)
     # responses_collection.insert_one(data)
-    return jsonify(data)
+    return jsonify(response_data)
     # except Exception as e:
     #    return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
 
