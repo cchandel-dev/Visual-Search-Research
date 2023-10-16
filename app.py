@@ -143,7 +143,7 @@ def save_form_data():
         "test_signal": True
     }
     users_collection.insert_one(data)
-    responses_collection.insert_one(data)
+    # responses_collection.insert_one(data)
     return jsonify(response_data)
     # except Exception as e:
     #    return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
@@ -165,7 +165,7 @@ def game_next():
     data = request.json
     user_index = data.get('user-index')
     responses_collection.insert_one(data)
-    users_collection.insert_one(data)
+    # users_collection.insert_one(data)
     split = 139
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
