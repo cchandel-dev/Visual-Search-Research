@@ -139,10 +139,14 @@ def save_form_data():
         "sex": sex,
         "full_name": full_name
     }
-
+    users_collection.insert_one(data)
+    responses_collection.insert_one(data)
     # try:
-    #responses_collection.insert_one(response_data)
+    # responses_collection.insert_one(response_data)
          # response_data.pop('_id', None)
+    data = {
+        "test_signal": True
+    }
     return jsonify(response_data)
     # except Exception as e:
     #    return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
