@@ -140,7 +140,7 @@ def save_form_data():
         "full_name": full_name
     }
     data["user_id"] = userID
-    users_collection.insert_one(response_data)
+    users_collection.insert_one(data)
     return jsonify(response_data)
 
 @app.route('/game-begin', methods=['GET'])
