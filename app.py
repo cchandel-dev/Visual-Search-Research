@@ -139,12 +139,8 @@ def save_form_data():
         "sex": sex,
         "full_name": full_name
     }
-    #data["user_id"] = generate_unique_user_id()
-    users_collection.insert_one(response_data)
-    # responses_collection.insert_one(data)
+    users_collection.insert_one(data)
     return jsonify(response_data)
-    # except Exception as e:
-    #    return jsonify({"error": "Failed to insert data into the database", "details": str(e), "response_data": response_data}), 500
 
 @app.route('/game-begin', methods=['GET'])
 def game_begin():
