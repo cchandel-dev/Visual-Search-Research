@@ -134,15 +134,15 @@ def save_form_data():
 
     # Store response data in MongoDB
     response_data = {
-        #"user_id": generate_unique_user_id(), #use this id for user-id
+        "user_id": generate_unique_user_id(), #use this id for user-id
         "age": age,
         "sex": sex,
         "full_name": full_name
     }
-    data = {
-        "test_signal": True
-    }
-    users_collection.insert_one(response_data)
+    # data = {
+    #     "test_signal": True
+    # }
+    users_collection.insert_one(data)
     # responses_collection.insert_one(data)
     return jsonify(response_data)
     # except Exception as e:
