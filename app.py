@@ -34,10 +34,10 @@ responses_collection = db['responses']
 
 #generate unique user id
 def generate_unique_user_id():
-    # timestamp = str(int(time.time() * 1000))  # Current timestamp in milliseconds
-    # random_chars = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
-    # unique_id = f"{timestamp}_{random_chars}"
-    return 1000#unique_id
+    timestamp = str(int(time.time() * 1000))  # Current timestamp in milliseconds
+    random_chars = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
+    unique_id = f"{timestamp}_{random_chars}"
+    return 1000
 
 # get image and annotation object detection data
 def get_object_detection_data(index):
