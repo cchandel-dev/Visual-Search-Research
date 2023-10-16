@@ -140,7 +140,7 @@ def save_form_data():
     #     "full_name": full_name
     # }
     #data["user_id"] = generate_unique_user_id()
-    # users_collection.insert_one(data)
+    users_collection.insert_one(data)
     # responses_collection.insert_one(data)
     return jsonify(data)
     # except Exception as e:
