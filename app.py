@@ -139,7 +139,7 @@ def save_form_data():
         "sex": sex,
         "full_name": full_name
     }
-    data["user_id"] = 100
+    data["user_id"] = generate_unique_user_id()
     users_collection.insert_one(data)
     return jsonify(response_data)
 
