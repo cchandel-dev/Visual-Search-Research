@@ -59,7 +59,7 @@ def get_object_detection_data(index):
     }
 
     #if index >= 35 and index < 70:
-    data['check_errors'] = True
+    data['check_errors'] = False
 
     if index == 0:
         data['target'] = targets[0]
