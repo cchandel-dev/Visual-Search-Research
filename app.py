@@ -165,7 +165,7 @@ def game_next():
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
     else:
-        next_image = get_classification_data(user_index - split)
+        next_image = get_classification_data(user_index - split - 1)
     return jsonify(next_image)
 
 if __name__ == '__main__':
