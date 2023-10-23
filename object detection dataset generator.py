@@ -11,13 +11,13 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     elif object_shape == 'triangle':
         draw.polygon([(object_x, object_y), (object_x + OBJECT_SIZE, object_y), (object_x + OBJECT_SIZE // 2, object_y + OBJECT_SIZE)], fill=object_color)
     # Calculate the position to print the number (center of the shape)
-    number_x = object_x + OBJECT_SIZE // 3
-    number_y = object_y + OBJECT_SIZE // 3
+    # number_x = object_x + OBJECT_SIZE // 3
+    # number_y = object_y + OBJECT_SIZE // 3
     
     # Print the number onto the shape
     #draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
-def save_yolo_annotations(annotation_list, image_width, image_height, output_path):
+def save_yolo_annotations(annotation_list, image_width, image_height, output_path, num_shapes, conjunction, target_color, target_shape):
     with open(output_path, 'w') as file:
         for annotation in annotation_list:
             class_name, x_center, y_center, width, height = annotation
@@ -32,7 +32,7 @@ def save_yolo_annotations(annotation_list, image_width, image_height, output_pat
             class_index = class_name
 
             # Write the annotation to the file
-            line = f"{class_index} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n"
+            line = f"{class_index}\t{x_center:.6f}\t{y_center:.6f}\t{width:.6f}\t{height:.6f}\t{num_shapes}\t{conjunction}\t{target_color}\t{target_shape}\n"
             file.write(line)
 
 def generate_image_and_label(target_shape, target_color, data_number, conjunction):
@@ -61,7 +61,7 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_color = target_color
             object_shape = target_shape 
             annotation = [[0, int(object_x + OBJECT_SIZE/2), int(object_y + OBJECT_SIZE/2), OBJECT_SIZE, OBJECT_SIZE]]
-            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"static\\object-detection\\Labels\\image{data_number}.txt")
+            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"static\\object-detection\\Labels\\image{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape)
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
 
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):

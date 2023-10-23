@@ -10,18 +10,17 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     elif object_shape == 'triangle':
         draw.polygon([(object_x, object_y), (object_x + OBJECT_SIZE, object_y), (object_x + OBJECT_SIZE // 2, object_y + OBJECT_SIZE)], fill=object_color)
     # Calculate the position to print the number (center of the shape)
-    number_x = object_x + OBJECT_SIZE // 3
-    number_y = object_y + OBJECT_SIZE // 3
+    # number_x = object_x + OBJECT_SIZE // 3
+    # number_y = object_y + OBJECT_SIZE // 3
     
     # Print the number onto the shape
     #draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
-def save_yolo_annotations(annotation, output_path):
+def save_yolo_annotations(annotation, output_path, num_shapes, conjunction, target_color, target_shape):
     with open(output_path, 'w') as file:
-            present = annotation
 
             # Write the annotation to the file
-            line = f"{present}\n"
+            line = f"{annotation}\t{num_shapes}\t{conjunction}\t{target_color}\t{target_shape}\n"
             file.write(line)
 
 def generate_image_and_label(target_shape, target_color, data_number, probability, conjunction):
@@ -40,20 +39,24 @@ def generate_image_and_label(target_shape, target_color, data_number, probabilit
             object_color = 'green' # distractor shape
             object_shape = 'circle'# distractor color
         else: # conjunction
-            object_color = random.choice(list(objects.keys())) #distractor color can be target color
+            object_color = random.choice(list(objects.keys())) # distractor color can be target color
             # Exclude the current target_shape from the list of available shapes
-            available_shapes = [shape for shape in objects.values() if shape != target_shape] if object_color == target_color else list(objects.values())
+            if object_color == target_color:
+                available_shapes = [shape for shape in objects.values() if shape != target_shape]
+            else:
+                available_shapes = list(objects.values())
             # Choose a new target_shape randomly from the available shapes
             object_shape = random.choice(available_shapes)
         rand = random.random()
         if idx == target_idx:
-            if rand <= probability: 
-                annotation = [1]    
+            if rand <= probability:
+                annotation = [1]
                 object_color = target_color
                 object_shape = target_shape
             else:
-                annotation = [0]       
-            save_yolo_annotations(annotation, f"static\\classification\\Labels\\image{data_number}.txt")
+                annotation = [0]
+            save_yolo_annotations(annotation, f"static\\classification\\Labels\\image{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape)
+        
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
 
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):
@@ -76,6 +79,7 @@ MARGIN = 10
 #sys.argv[4] is the number of datapoints you would like to generate
 #sys.argv[5] is the number of positive cases you would like to generate
 #sys.argv[6] is the number of shapes per image
+
 if __name__ =='__main__':
     conjunction = sys.argv[1] == 'conjunction'
     positive_num = int(sys.argv[5])

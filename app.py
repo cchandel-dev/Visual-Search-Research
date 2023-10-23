@@ -49,13 +49,21 @@ def get_object_detection_data(index):
         y_center = float(line[2]) * IMAGE_HEIGHT
         width = float(line[3]) * IMAGE_WIDTH
         height = float(line[4]) * IMAGE_HEIGHT
+        num_shapes = int(line[5])
+        conjunction = bool(line[6])
+        target_color = line[7]
+        target_shape = line[8]
     data = {
         "image": encoded_string,
         "find_position": True,
         "posY": y_center,
         "posX": x_center,
         "width": width,
-        "height": height
+        "height": height,
+        "num_shapes": num_shapes,
+        "conjunction": conjunction,
+        "target_color": target_color,
+        "target_shape": target_shape
     }
 
     #if index >= 35 and index < 70:
@@ -63,11 +71,11 @@ def get_object_detection_data(index):
 
     if index == 0:
         data['target'] = targets[0]
-    elif index == 35:
+    elif index == 28:
         data['target'] = targets[1]
-    elif index == 70:
+    elif index == 56:
         data['target'] = targets[2]
-    elif index == 104:
+    elif index == 84:
         data['target'] = targets[3]
     return data
 
@@ -78,20 +86,28 @@ def get_classification_data(index):
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
         line = file.read()
         present = int(line[1]) == 1
+        num_shapes = int(line[2])
+        conjunction = bool(line[3])
+        target_color = line[4]
+        target_shape = line[5]
     data = {
         "image": encoded_string,
         "present": present,
-        "find_position": False
+        "find_position": False,
+        "num_shapes": num_shapes,
+        "conjunction": conjunction,
+        "target_color": target_color,
+        "target_shape": target_shape
     }
     if index == 0:
         data['target'] = targets[4]
-    elif index == 31:
+    elif index == 28:
         data['target'] = targets[5]
     elif index == 56:
         data['target'] = targets[6]
     elif index == 84:
         data['target'] = targets[7]
-    return data
+    return [data]
 
 @app.route('/database-ping')
 def databaseping():
@@ -160,12 +176,12 @@ def game_next():
     data = request.json
     user_index = data.get('user-index')
     responses_collection.insert_one(data)
-    # users_collection.insert_one(data)
-    split = 139
+    split = 111
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
     else:
         next_image = get_classification_data(user_index - split - 1)
+    
     return jsonify(next_image)
 
 if __name__ == '__main__':
