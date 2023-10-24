@@ -1,1 +1,1 @@
-[0]	4	False	green	square
+[0]	4	True	red	square

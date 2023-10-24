@@ -1,1 +1,1 @@
-[1]	9	False	green	square
+[0]	9	True	red	square
