@@ -1,1 +1,1 @@
-[1]	4	True	red	square
+[0]	4	True	red	square
