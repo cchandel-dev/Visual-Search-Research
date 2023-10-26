@@ -176,7 +176,7 @@ def game_next():
     data = request.json
     user_index = data.get('user-index')
     responses_collection.insert_one(data)
-    split = 7
+    split = 111
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
     else:
