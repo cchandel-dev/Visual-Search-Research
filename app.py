@@ -12,14 +12,14 @@ IMAGE_HEIGHT = 400
 
 targets = [
             'click on the red square',
-            'click on the red circle (number of mistakes are tracked)',
+            'click on the blue circle',
             'click on the green square',
-            'click on the red square',
+            'click on the red triangles',
 
             'click "Y" for yes or "N" for no - if there is a red square',
-            'click "Y" for yes or "N" for no - if there is a red circle',
+            'click "Y" for yes or "N" for no - if there is a blue circle',
             'click "Y" for yes or "N" for no - if there is a green square',
-            'click "Y" for yes or "N" for no - if there is a red square',
+            'click "Y" for yes or "N" for no - if there is a red triangle',
     
 ]
 
@@ -176,7 +176,7 @@ def game_next():
     data = request.json
     user_index = data.get('user-index')
     responses_collection.insert_one(data)
-    split = 111
+    split = 110
     if user_index <= split:
         next_image = get_object_detection_data(user_index)
     else:
