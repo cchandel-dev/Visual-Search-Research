@@ -35,7 +35,9 @@ def save_yolo_annotations(annotation_list, image_width, image_height, output_pat
             line = f"{class_index}\t{x_center:.6f}\t{y_center:.6f}\t{width:.6f}\t{height:.6f}\t{num_shapes}\t{conjunction}\t{target_color}\t{target_shape}\n"
             file.write(line)
 
-def generate_image_and_label(target_shape, target_color, data_number, conjunction):
+def generate_image_and_label(data_number, conjunction):
+    target_shape = 'square'
+    target_color = 'green'
     object_x = SPACING/2
     object_y = SPACING/2
     image = Image.new("RGB", (IMAGE_WIDTH, IMAGE_HEIGHT), "white")
@@ -51,17 +53,18 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_color = 'green' # distractor shape
             object_shape = 'circle'# distractor color
         else: # conjunction
-            object_color = random.choice(list(objects.keys())) #distractor color can be target color
-            # Exclude the current target_shape from the list of available shapes
-            available_shapes = [shape for shape in objects.values() if shape != target_shape] if object_color == target_color else list(objects.values())
-            # Choose a new target_shape randomly from the available shapes
-            object_shape = random.choice(available_shapes)
-
+            rand = random.random()
+            if rand < 0.5:
+                object_color = 'green'
+                object_shape = 'circle'
+            else:
+                object_color = 'red'
+                object_shape = 'square'
         if idx == target_idx:
             object_color = target_color
-            object_shape = target_shape 
+            object_shape = target_shape
             annotation = [[0, int(object_x + OBJECT_SIZE/2), int(object_y + OBJECT_SIZE/2), OBJECT_SIZE, OBJECT_SIZE]]
-            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"static\\object-detection\\Labels\\image{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape)
+            save_yolo_annotations(annotation, IMAGE_WIDTH, IMAGE_HEIGHT, f"static\\object-detection\\Labels\\{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape)
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
 
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):
@@ -70,32 +73,31 @@ def generate_image_and_label(target_shape, target_color, data_number, conjunctio
             object_y += SPACING + OBJECT_SIZE
             object_x = SPACING/2
     # Save the image
-    image.save(f"static\\object-detection\\Images\\image{data_number}.png")
+    image.save(f"static\\object-detection\\Images\\{data_number}.png")
 
 
 # Define const variables
-IMAGE_WIDTH = 400
-IMAGE_HEIGHT = 400
+IMAGE_WIDTH = 1200
+IMAGE_HEIGHT = 1200
 MARGIN = 10
 
 
-#sys.argv[1] is 'conjuntion' or 'feature' default is feature
-#sys.argv[2] is target shape default is 'square'
-#sys.argv[3] is target color default is 'green'
-#sys.argv[4] is the number of datapoints you would like to generate
-#sys.argv[5] is the number of shapes per image
+#sys.argv[1]  is the number of datapoints you would like to generate
 if __name__ =='__main__':
-    conjunction = sys.argv[1] == 'conjunction'    
-    NUM_SHAPES = int(sys.argv[5])
-    NUM_X_SHAPES = NUM_SHAPES ** 0.5
-    NUM_Y_SHAPES = NUM_SHAPES ** 0.5
-    SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
-    OBJECT_SIZE = 30
-    SPACING = SPACE_PER_OBJECT - OBJECT_SIZE
-    print('Working on generating your data...')
-    # path joining version for other paths
-    DIR = '.\\static\\object-detection\\Images'
-    currLen = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
-    for num in range(currLen, currLen + int(sys.argv[4])):
-        generate_image_and_label(sys.argv[2], sys.argv[3], num, conjunction)
+    MODES = ['conjunction', 'feature']
+    DISTRACTOR_SIZE = [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196]
+    for MODE in MODES: 
+        conjunction = MODE == 'conjunction'
+        for NUM_SHAPES in DISTRACTOR_SIZE:
+            NUM_X_SHAPES = NUM_SHAPES ** 0.5
+            NUM_Y_SHAPES = NUM_SHAPES ** 0.5
+            SPACE_PER_OBJECT = int(IMAGE_WIDTH/NUM_X_SHAPES)
+            OBJECT_SIZE = 60
+            SPACING = SPACE_PER_OBJECT - OBJECT_SIZE
+            print('Working on generating your data...')
+            # path joining version for other paths
+            DIR = '.\\static\\object-detection\\Images'
+            currLen = len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))])
+            for num in range(currLen, currLen + int(sys.argv[1])):
+                generate_image_and_label(num, conjunction)
     print('Dataset generated.')

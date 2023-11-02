@@ -133,8 +133,10 @@ def get_info_form():
     response_data = {
         "formItems": [
             {"value": "Full Name", "type": "string"},
-            {"value": "Age", "type": "number"},
-            {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
+            {"value": "Year of Study", "type": "select", "options": ["1", "2", "3","4", "N/A"]},
+            {"value": "Task Type", "type": "select", "options": ["detection", "pointing"]}
+            # {"value": "Age", "type": "number"},
+            # {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
     }
 
@@ -144,15 +146,15 @@ def get_info_form():
 def save_form_data():
     # Other processing...
     data = request.json
-    age = data.get('Age')
-    sex = data.get('Sex')
+    task = data.get('Task Type')
+    year = data.get('Year of Study')
     full_name = data.get('Full Name')
     userID = generate_unique_user_id()
     # Store response data in MongoDB
     response_data = {
         "user_id": userID, #use this id for user-id
-        "age": age,
-        "sex": sex,
+        "task_type": task,
+        "year_of_study": year,
         "full_name": full_name
     }
     data["user_id"] = userID
@@ -175,12 +177,12 @@ def test():
 def game_next():
     data = request.json
     user_index = data.get('user-index')
+    task_type = data.get('task_type')
     responses_collection.insert_one(data)
-    split = 110
-    if user_index <= split:
+    if task_type == "pointing":
         next_image = get_object_detection_data(user_index)
     else:
-        next_image = get_classification_data(user_index - split - 1)
+        next_image = get_classification_data(user_index)
     
     return jsonify(next_image)
 

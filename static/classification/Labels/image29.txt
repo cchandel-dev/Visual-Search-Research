@@ -1,1 +1,1 @@
-[1]	4	False	blue	circle
+[0]	16	False	green	square

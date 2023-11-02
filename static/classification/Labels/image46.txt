@@ -1,1 +1,1 @@
-[1]	36	False	blue	circle
+[1]	36	True	green	square

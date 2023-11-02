@@ -1,1 +1,1 @@
-[0]	9	True	red	square
+[1]	4	True	green	square

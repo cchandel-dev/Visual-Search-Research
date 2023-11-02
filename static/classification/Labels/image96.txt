@@ -1,1 +1,1 @@
-[1]	25	False	red	triangle
+[1]	49	False	green	square

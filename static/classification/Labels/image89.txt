@@ -1,1 +1,1 @@
-[0]	9	False	red	triangle
+[0]	64	False	green	square

@@ -1,1 +1,1 @@
-[0]	25	False	red	triangle
+[0]	16	True	green	square
