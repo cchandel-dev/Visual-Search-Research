@@ -178,6 +178,7 @@ def game_next():
     data = request.json
     if data is None:
         next_image["max_images"] = 252
+        task_type = 'pointing'
     else:
         user_index = data.get('user-index')
         task_type = data.get('task_type')
