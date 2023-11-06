@@ -190,8 +190,8 @@ def game_next():
         if user_index == 0:
             next_image["max_images"] = 252
 
-    except (Exception):
-        return jsonify(Exception)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
     return jsonify(next_image)
