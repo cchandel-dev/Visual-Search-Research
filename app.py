@@ -176,9 +176,13 @@ def test():
 @app.route('/game-next', methods=['POST'])
 def game_next():
     data = request.json
-    user_index = data.get('user-index')
-    task_type = data.get('task_type')
-    responses_collection.insert_one(data)
+    if data is None:
+        next_image["max_images"] = 252
+    else:
+        user_index = data.get('user-index')
+        task_type = data.get('task_type')
+        responses_collection.insert_one(data)
+        
     if task_type == "pointing":
         next_image = get_object_detection_data(user_index)
     else:
