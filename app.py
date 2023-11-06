@@ -181,13 +181,18 @@ def game_next():
     task_type = data.get('task_type')
     responses_collection.insert_one(data)
 
-    if task_type == "pointing":
-        next_image = get_object_detection_data(user_index)
-    else:
-        next_image = get_classification_data(user_index)
+    try:
+        if task_type == "pointing":
+            next_image = get_object_detection_data(user_index)
+        else:
+            next_image = get_classification_data(user_index)
 
-    if user_index == 0:
-        next_image["max_images"] = 252
+        if user_index == 0:
+            next_image["max_images"] = 252
+
+    except (Exception):
+        return jsonify(Exception)
+
 
     return jsonify(next_image)
 
