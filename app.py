@@ -161,12 +161,12 @@ def save_form_data():
     users_collection.insert_one(data)
     return jsonify(response_data)
 
-@app.route('/game-begin', methods=['GET'])
-def game_begin():
-    # Other processing...session["index"]
-    next_image = get_object_detection_data(0)
-    next_image["max_images"] = 252
-    return jsonify(next_image)
+# @app.route('/game-begin', methods=['GET'])
+# def game_begin():
+#     # Other processing...session["index"]
+#     next_image = get_object_detection_data(0)
+#     next_image["max_images"] = 252
+#     return jsonify(next_image)
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -176,19 +176,19 @@ def test():
 @app.route('/game-next', methods=['POST'])
 def game_next():
     data = request.json
-    if data is None:
-        next_image["max_images"] = 252
-        task_type = 'pointing'
-    else:
-        user_index = data.get('user-index')
-        task_type = data.get('task_type')
-        responses_collection.insert_one(data)
-        
+
+    user_index = data.get('user-index')
+    task_type = data.get('task_type')
+    responses_collection.insert_one(data)
+
     if task_type == "pointing":
         next_image = get_object_detection_data(user_index)
     else:
         next_image = get_classification_data(user_index)
-    
+
+    if user_index == 0:
+        next_image["max_images"] = 252
+
     return jsonify(next_image)
 
 if __name__ == '__main__':
