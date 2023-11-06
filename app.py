@@ -84,7 +84,7 @@ def get_classification_data(index):
     with open("./static/classification/Images/image{}.png".format(index), "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     with open("./static/classification/Labels/image{}.txt".format(index), 'r') as file:
-        line = file.read()
+        line = file.read().split()
         present = int(line[1]) == 1
         num_shapes = int(line[2])
         conjunction = bool(line[3])
@@ -135,11 +135,8 @@ def get_info_form():
             {"value": "Full Name", "type": "string"},
             {"value": "Year of Study", "type": "select", "options": ["1", "2", "3","4", "N/A"]},
             {"value": "Task Type", "type": "select", "options": ["detection", "pointing"]}
-            # {"value": "Age", "type": "number"},
-            # {"value": "Sex", "type": "select", "options": ["Male", "Female", "Prefer not to say"]}
         ]
     }
-
     return jsonify(response_data)
 
 @app.route('/save-form-data', methods=['POST'])
@@ -198,3 +195,4 @@ def game_next():
 
 if __name__ == '__main__':
     app.run(debug=True)
+0
