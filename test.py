@@ -1,5 +1,5 @@
 import base64
-index = 0
+index = 13
 targets = [
             'click on the red square',
             'click on the blue circle',

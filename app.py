@@ -107,7 +107,7 @@ def get_classification_data(index):
         data['target'] = targets[6]
     elif index == 84:
         data['target'] = targets[7]
-    return [data]
+    return data
 
 @app.route('/database-ping')
 def databaseping():
