@@ -184,8 +184,8 @@ def game_next():
         else:
             next_image = get_classification_data(user_index)
 
-        # if user_index == 0:
-        #     next_image["max_images"] = 252
+        if user_index == 0:
+            next_image["max_images"] = 103
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -195,4 +195,3 @@ def game_next():
 
 if __name__ == '__main__':
     app.run(debug=True)
-0
