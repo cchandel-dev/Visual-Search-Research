@@ -42,7 +42,7 @@ def get_object_detection_data(index):
         width = float(line[3]) * IMAGE_WIDTH
         height = float(line[4]) * IMAGE_HEIGHT
         num_shapes = int(line[5])
-        conjunction = bool(line[6])
+        conjunction = bool(line[6] == "True")
         target_color = line[7]
         target_shape = line[8]
     data = {
@@ -73,7 +73,7 @@ def get_classification_data(index):
         line = file.read().split()
         present = int(line[0][1]) == 1
         num_shapes = int(line[1])
-        conjunction = bool(line[2])
+        conjunction = bool(line[2] == "True")
         target_color = line[3]
         target_shape = line[4]
     data = {

@@ -1,5 +1,5 @@
 import base64
-index = 13
+index = 16
 targets = [
             'click on the red square',
             'click on the blue circle',
@@ -17,7 +17,7 @@ try:
         line = file.read().split()
         present = int(line[0][1]) == 1
         num_shapes = int(line[1])
-        conjunction = bool(line[2])
+        conjunction = bool(line[2] == "True")
         target_color = line[3]
         target_shape = line[4]
         data = {
@@ -39,6 +39,6 @@ try:
             data['target'] = targets[7]
         if index == 0:
             data["max_images"] = 252
-        print(data)
+        print(conjunction)
 except Exception as e:
     print('error', str(e))
