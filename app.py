@@ -45,6 +45,9 @@ def get_object_detection_data(index):
         conjunction = bool(line[6] == "True")
         target_color = line[7]
         target_shape = line[8]
+        green_circles = int(line[9])
+        red_squares = int(line[10])
+        green_squares = int(line[11])
     data = {
         "image": encoded_string,
         "find_position": True,
@@ -55,7 +58,10 @@ def get_object_detection_data(index):
         "num_shapes": num_shapes,
         "conjunction": conjunction,
         "target_color": target_color,
-        "target_shape": target_shape
+        "target_shape": target_shape,
+        "green_circles" : green_circles,
+        "red_squares" : red_squares,
+        "green_squares" : green_squares
     }
 
     #if index >= 35 and index < 70:
@@ -76,6 +82,9 @@ def get_classification_data(index):
         conjunction = bool(line[2] == "True")
         target_color = line[3]
         target_shape = line[4]
+        green_circles = int(line[5])
+        red_squares = int(line[6])
+        green_squares = int(line[7])
     data = {
         "image": encoded_string,
         "present": present,
@@ -83,7 +92,10 @@ def get_classification_data(index):
         "num_shapes": num_shapes,
         "conjunction": conjunction,
         "target_color": target_color,
-        "target_shape": target_shape
+        "target_shape": target_shape,
+        "green_circles" : green_circles,
+        "red_squares" : red_squares,
+        "green_squares" : green_squares
     }
     if index == 0:
         data['target'] = targets[0]
