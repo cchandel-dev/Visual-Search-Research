@@ -1,8 +1,10 @@
 import os, re, sys, random
 
+folder = sys.argv[1]
+
 # Define the directory paths for images and annotations
-image_folder = "C:\\Users\\cchan\\Visual-Search-Research\\static\\classification\\Images"
-annotation_folder = "C:\\Users\\cchan\\Visual-Search-Research\\static\\classification\\Labels"
+image_folder = "C:\\Users\\cchan\\Visual-Search-Research\\static\\{}\\Images".format(folder)
+annotation_folder = "C:\\Users\\cchan\\Visual-Search-Research\\static\\{}\\Labels".format(folder)
 
 # Get the list of file names in the folders
 image_files = os.listdir(image_folder)

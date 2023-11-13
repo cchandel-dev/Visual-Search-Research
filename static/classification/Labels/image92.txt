@@ -1,1 +1,1 @@
-[1]	169	True	green	square
+[1]	16	True	green	square	7	8	1

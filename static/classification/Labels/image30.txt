@@ -1,1 +1,1 @@
-[0]	121	False	green	square
+[0]	25	False	green	square	25	0	0

@@ -1,1 +1,1 @@
-[0]	196	True	green	square
+[0]	196	False	green	square	196	0	0

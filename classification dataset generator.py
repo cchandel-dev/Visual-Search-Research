@@ -16,11 +16,10 @@ def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     # Print the number onto the shape
     #draw.text((number_x, number_y), str(number), fill=(255, 255, 255))  # You can adjust fill color
 
-def save_yolo_annotations(annotation, output_path, num_shapes, conjunction, target_color, target_shape):
+def save_yolo_annotations(annotation, output_path, num_shapes, conjunction, target_color, target_shape, green_circle, red_square, green_square):
     with open(output_path, 'w') as file:
-
             # Write the annotation to the file
-            line = f"{annotation}\t{num_shapes}\t{conjunction}\t{target_color}\t{target_shape}\n"
+            line = f"{annotation}\t{num_shapes}\t{conjunction}\t{target_color}\t{target_shape}\t{green_circle}\t{red_square}\t{green_square}\n"
             file.write(line)
 
 def generate_image_and_label( data_number, conjunction, target_available):
@@ -36,6 +35,10 @@ def generate_image_and_label( data_number, conjunction, target_available):
            'blue': 'triangle'}
     name = 'conjunction' if conjunction else 'feature'
     # Generate shapes
+    green_circle = 0
+    red_square = 0
+    green_square = 0
+    annotation = [0]
     for idx in range(NUM_SHAPES):
         if not conjunction: # feature
             object_color = 'green' # distractor shape
@@ -53,11 +56,14 @@ def generate_image_and_label( data_number, conjunction, target_available):
                 annotation = [1]
                 object_color = target_color
                 object_shape = target_shape
-            else:
-                annotation = [0]
-            save_yolo_annotations(annotation, f"static\\classification\\Labels\\{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape)
+                green_square = 1
         draw_object(draw, object_shape, object_color, object_x, object_y, idx)
-
+        # count the types of distractors
+        if object_shape == 'circle' and object_color == 'green':
+            green_circle += 1
+        elif object_shape == 'square' and object_color == 'red':
+            red_square += 1
+        # object spacing is defined below
         if object_x < IMAGE_WIDTH - (SPACING + OBJECT_SIZE):
             object_x += SPACING + OBJECT_SIZE
         else:
@@ -65,6 +71,7 @@ def generate_image_and_label( data_number, conjunction, target_available):
             object_x = SPACING/2
     # Save the image
     image.save(f"static\\classification\\Images\\{data_number}.png")
+    save_yolo_annotations(annotation, f"static\\classification\\Labels\\{data_number}.txt", NUM_SHAPES, conjunction, target_color, target_shape, green_circle, red_square, green_square)
 
 
 # Define const variables
@@ -72,7 +79,7 @@ IMAGE_WIDTH = 1200
 IMAGE_HEIGHT = 1200
 MARGIN = 10
 
-#sys.argv[1] is the number of positive cases you would like to generate
+#sys.argv[1] is the number of cases you would like to generate per distractor
 
 if __name__ =='__main__':
     MODES = ['conjunction', 'feature']

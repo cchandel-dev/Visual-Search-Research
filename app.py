@@ -13,7 +13,7 @@ IMAGE_HEIGHT = 400
 targets = [
             'click "Y" for yes or "N" for no - if there is a green square',
             'click on the green square',
-]
+        ]
 
 # uri = "mongodb+srv://Brain3DVizMember:<9GyKqp4b9blclzqJ>@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
 uri = "mongodb+srv://Brain3DVizMember:NmwJ5IYmUHDmaQNa@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"

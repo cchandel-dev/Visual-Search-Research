@@ -1,1 +1,1 @@
-[1]	16	True	green	square
+[1]	9	False	green	square	8	0	1
