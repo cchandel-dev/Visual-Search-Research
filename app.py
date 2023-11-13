@@ -176,6 +176,9 @@ def game_next():
         else:
             next_image = get_classification_data(user_index)
 
+        if user_index == 3:
+            next_image["pause"] = True
+
         if user_index == 0:
             next_image["max_images"] = 103
 
