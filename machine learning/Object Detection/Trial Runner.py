@@ -1,5 +1,6 @@
-import os, torch
+import os, torch, math, time
 from ultralytics import YOLO
+from datetiem import datetime
 from ultralytics.utils.benchmarks import benchmark
 from pymongo.mongo_client import MongoClient
 
@@ -11,10 +12,14 @@ ml_collection = db['machine-learning']
 class TrialRunner:
     def __init__(self):
         self.model_paths = ['C:\\Users\\cchan\\computer-vision\\runs\\detect\\train9\\weights\\best.pt']
-        self.test_data_path = ''
+        self.test_data_path = 'C:\\Users\\cchan\\Visual-Search-Research\\machine learning\\Object Detection\\train'
         self.test_images_paths = os.listdir(os.path.join(self.test_data_path, "images"))
         self.current_index = 0
         self.current_model = None
+        self.user = None
+        self.cpu = True
+        self.device = None
+        self.timestamp = datetime.now()
     
     def load_model(self):
         if self.current_index < len(self.model_paths):
@@ -30,40 +35,48 @@ class TrialRunner:
             for test_image_path in self.test_images_paths:
                 # let's say we are happy with these parameters as our input
                 results = self.current_model.predict(   
-                                                        source = test_image_path, # might need the full path here
+                                                        source = os.path.join(self.test_data_path,"images", test_image_path), # might need the full path here
                                                         device ='cpu', 
                                                         save = False,
                                                         imgsz = 640,
                                                         conf = 0.35,
                                                     )
                 # now let's figure out how accurate the prediction was and log anything of note that results might hold (ie inference speed, number of predictions per confidence range, etc.)
-                speed = results.speed
-                image_metrics = {}
+                inference_metrics = results.__getitem__(0).speed
                 label_folder = os.path.join(self.test_data_path, "labels")
+                lines = ""
                 with open(os.path.join(label_folder, test_image_path[:-4]+".txt"), 'r') as lbls:
-                    lines = lbls.readline().split()
-                    predictions_tensor = results.boxes.xywhn
-                    # align labels to boxes
-                    annotations = lines_to_boxes(lines)
-                    predictions = xywhn_to_yolo_format(results.boxes.xywhn)
-                    #REMINDER: this assumes your model works pretty well and now you just want to gather more performance related data
-                    aligning= align_annotations(predictions, annotations)
-                    image_metrics["difference_anot-pred"] = len(annotations) - len(predictions)
-                    image_metrics["length-annotations"] = len(annotations)
-                    image_metrics["length-predictions"] = len(predictions)
-                    image_metrics["pairs_anot-pred"] = len(aligning)
-                    for align_iou in aligning:
-                        accuracy_metrics = {}
-                        # class equality
-                        accuracy_metrics["class-equality"] = predictions[align_iou[0]] == annotations[align_iou[1]]
-                        accuracy_metrics["class-equality"] = predictions[align_iou[0]] == annotations[align_iou[1]]
-                        # centre point distance
-                        # intersection over union
-                        # you can add mean average precision if you are interested later, but this is not necessary tbh.
+                    lines = lbls.readlines()
+                # clean up the formatting for both the annotations and predictions
+                print("lines: ", lines)
+                annotations = lines_to_boxes(lines)
+                predictions = xywhn_to_yolo_format(results.__getitem__(0).boxes.xywhn, results.__getitem__(0).boxes.cls)
+                #REMINDER: this assumes your model works pretty well and now you just want to gather more performance related data
+                print("predictions: ", predictions)
+                print("annotations: ", annotations)
+                aligning = align_annotations(predictions, annotations)
+                inference_metrics["difference_anot-pred"] = len(annotations) - len(predictions)
+                inference_metrics["length-annotations"] = len(annotations)
+                inference_metrics["length-predictions"] = len(predictions)
+                inference_metrics["pairs_anot-pred"] = len(aligning)
+                for align_iou in aligning:
+                    accuracy_metrics = {}
+                    # class equality
+                    accuracy_metrics["class-equality"] = predictions[align_iou[0]][4] == annotations[align_iou[1]][4]
+                    # centre point distance
+                    x1 = predictions[align_iou[1]][0]
+                    x2 = annotations[align_iou[0]][0]
+                    y1 = predictions[align_iou[1]][1]
+                    y2 = annotations[align_iou[0]][1]
+                    accuracy_metrics["euclidean-distance-between-centers"] = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+                    accuracy_metrics["x-distance-between-centers"] = x1 - x2
+                    accuracy_metrics["y-distance-between-centers"] = y1 - y2
+                    # intersection over union
+                    accuracy_metrics["intersection-over-union"] = align_iou[2]
 
-
-        print(results)
-        return results
+                    #FOR EACH BOUNDING BOX WE SEND ONE MESSAGE
+                    msg = {**accuracy_metrics, **inference_metrics}
+                    ml_collection.insert_one(msg)
 
 def xywhn_to_yolo_format(xywh_tensor, cls_tensor):
     """
@@ -75,26 +88,32 @@ def xywhn_to_yolo_format(xywh_tensor, cls_tensor):
     Returns:
     - yolo_boxes: List of bounding boxes in YOLO format.
     """
+    # print("xywh_tensor:", xywh_tensor)
+    # print("cls_tensor:", cls_tensor)
     yolo_boxes = []
-    for idx in len(xywh_tensor):
-        box = xywh_tensor[idx]
-        cls = cls_tensor[idx]
-        x_center, y_center, width, height = box.tolist()
+    cls = cls_tensor.tolist()
+    # print("cls_list:", cls)
+    for idx in range(len(xywh_tensor)):
+        box = xywh_tensor[idx].tolist()
+        # print("box:", box)
+        x_center, y_center, width, height = box
         # Convert to YOLO format (x_center, y_center, width, height)
         yolo_box = [
-            x_center + width / 2,
-            y_center + height / 2,
+            x_center,
+            y_center,
             width,
             height,
-            cls
+            int(cls[idx])
         ]
+        # print("yolo_box:", yolo_box)
         yolo_boxes.append(yolo_box)
     return yolo_boxes
 
 def lines_to_boxes(lines):
     yolo_boxes = []
     for line in lines:
-        yolo_boxes.append([line[1:4], line[0]])
+        line = line.split()
+        yolo_boxes.append([float(line[1]), float(line[2]), float(line[3]), float(line[4]), int(line[0])])
     return yolo_boxes
 
 def align_annotations(predictions, annotations, threshold=0.35):
@@ -162,4 +181,4 @@ def calculate_iou(box1, box2):
 if __name__ == '__main__':
     tr = TrialRunner()
     tr.load_model()
-    tr.benchmarking_loop()
+    tr.ultralytics_loop()
