@@ -20,15 +20,8 @@ class TrialRunner:
         self.cpu = True
         self.device = None
         self.timestamp = datetime.now()
-    
-    def load_model(self):
-        if self.current_index < len(self.model_paths):
-            self.current_model = YOLO(self.model_paths[self.current_index])
-        else:
-            self.current_model = None
-            raise Exception("No more models to run")
 
-    def ultralytics_loop(self):
+    def object_detection_loop(self):
         for model_path in self.model_paths:
             self.current_model = YOLO(model_path)
             # let's assume they are already trained.
@@ -50,6 +43,8 @@ class TrialRunner:
                 # clean up the formatting for both the annotations and predictions
                 print("lines: ", lines)
                 annotations = lines_to_boxes(lines)
+                # num_shapes, conjunction/feature, target color, target shape, num green circles, num red square, num green squares
+                annotations_addendum = [int(lines[0][5]), lines[0][6] == 'True', lines[0][7], lines[0][8], int(lines[0][9]), int(lines[0][10]), int(lines[0][11])]
                 predictions = xywhn_to_yolo_format(results.__getitem__(0).boxes.xywhn, results.__getitem__(0).boxes.cls)
                 #REMINDER: this assumes your model works pretty well and now you just want to gather more performance related data
                 print("predictions: ", predictions)
@@ -59,6 +54,13 @@ class TrialRunner:
                 inference_metrics["length-annotations"] = len(annotations)
                 inference_metrics["length-predictions"] = len(predictions)
                 inference_metrics["pairs_anot-pred"] = len(aligning)
+                inference_metrics["num_shapes"] = annotations_addendum[0]
+                inference_metrics["conjunction"] = annotations_addendum[1]
+                inference_metrics["target_color"] = annotations_addendum[2]
+                inference_metrics["target_shape"] = annotations_addendum[3]
+                inference_metrics["num_green_circle"] = annotations_addendum[4]
+                inference_metrics["num_red_square"] = annotations_addendum[5]
+                inference_metrics["num_green_square"] = annotations_addendum[6]
                 for align_iou in aligning:
                     accuracy_metrics = {}
                     # class equality
@@ -132,7 +134,7 @@ def align_annotations(predictions, annotations, threshold=0.35):
 
     for pred_index, prediction in enumerate(predictions):
         for annot_index, annotation in enumerate(annotations):
-            iou = calculate_iou(prediction, annotation)
+            iou = calculate_iou(prediction[0:3], annotation[0:3]) #only need these four labels
             if iou > threshold:
                 aligned_pairs.append((pred_index, annot_index, iou))
                 # You may want to break here if you don't want a prediction to match multiple annotations
@@ -180,5 +182,4 @@ def calculate_iou(box1, box2):
 
 if __name__ == '__main__':
     tr = TrialRunner()
-    tr.load_model()
-    tr.ultralytics_loop()
+    tr.object_detection_loop()
