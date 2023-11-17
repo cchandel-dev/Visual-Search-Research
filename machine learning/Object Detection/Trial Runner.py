@@ -1,6 +1,6 @@
-import os, torch, math, time
+import os, torch, math, time, glob
 from ultralytics import YOLO
-from datetiem import datetime
+from datetime import datetime
 from ultralytics.utils.benchmarks import benchmark
 from pymongo.mongo_client import MongoClient
 
@@ -11,7 +11,11 @@ ml_collection = db['machine-learning']
 
 class TrialRunner:
     def __init__(self):
-        self.model_paths = ['C:\\Users\\cchan\\computer-vision\\runs\\detect\\train9\\weights\\best.pt']
+        self.model_paths = 'C:\\Users\\cchan\\Visual-Search-Research\\machine learning\\object detection models'
+        # Get a list of all files in the folder
+        all_files = glob.glob(os.path.join(self.model_paths, '*'))
+        # Filter to keep only image files (you can modify this condition based on your file types)
+        self.model_paths = [file for file in all_files if file.lower().endswith(('.pt'))]
         self.test_data_path = 'C:\\Users\\cchan\\Visual-Search-Research\\machine learning\\Object Detection\\train'
         self.test_images_paths = os.listdir(os.path.join(self.test_data_path, "images"))
         self.current_index = 0
@@ -41,14 +45,12 @@ class TrialRunner:
                 with open(os.path.join(label_folder, test_image_path[:-4]+".txt"), 'r') as lbls:
                     lines = lbls.readlines()
                 # clean up the formatting for both the annotations and predictions
-                print("lines: ", lines)
                 annotations = lines_to_boxes(lines)
                 # num_shapes, conjunction/feature, target color, target shape, num green circles, num red square, num green squares
-                annotations_addendum = [int(lines[0][5]), lines[0][6] == 'True', lines[0][7], lines[0][8], int(lines[0][9]), int(lines[0][10]), int(lines[0][11])]
+                line = lines[0].split()
+                annotations_addendum = [int(line[5]), line[6] == 'True', line[7], line[8], int(line[9]), int(line[10]), int(line[11])]
                 predictions = xywhn_to_yolo_format(results.__getitem__(0).boxes.xywhn, results.__getitem__(0).boxes.cls)
                 #REMINDER: this assumes your model works pretty well and now you just want to gather more performance related data
-                print("predictions: ", predictions)
-                print("annotations: ", annotations)
                 aligning = align_annotations(predictions, annotations)
                 inference_metrics["difference_anot-pred"] = len(annotations) - len(predictions)
                 inference_metrics["length-annotations"] = len(annotations)
@@ -134,7 +136,7 @@ def align_annotations(predictions, annotations, threshold=0.35):
 
     for pred_index, prediction in enumerate(predictions):
         for annot_index, annotation in enumerate(annotations):
-            iou = calculate_iou(prediction[0:3], annotation[0:3]) #only need these four labels
+            iou = calculate_iou(prediction[0:4], annotation[0:4]) #only need these four labels
             if iou > threshold:
                 aligned_pairs.append((pred_index, annot_index, iou))
                 # You may want to break here if you don't want a prediction to match multiple annotations
