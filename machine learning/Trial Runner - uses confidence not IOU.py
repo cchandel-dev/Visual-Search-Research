@@ -24,10 +24,7 @@ class TrialRunner:
         self.timestamp = datetime.now()
 
     def object_detection_loop(self):
-        print('in the loop')
-        print(self.model_paths)
         for model_path in self.model_paths:
-            print(model_path)
             model_metrics = {}
             model_metrics['model_name'] = model_path.split(' ')[0]
             model_metrics['num_epochs'] = int(model_path.split(' ')[1])
@@ -37,6 +34,9 @@ class TrialRunner:
             else:
                 model_metrics['one-stager'] = False
                 self.current_model = RTDETR(os.path.join(self.model_folder, model_path, 'weights', 'best.pt'))
+            model_metrics['parameters'] = self.current_model.info()[1]
+            model_metrics['layers'] = self.current_model.info()[0]
+            print(model_metrics['model_name'], self.current_model.info())
             # let's assume they are already trained.
             for test_image_path in self.test_images_paths:
                 # let's say we are happy with these parameters as our input
