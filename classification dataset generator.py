@@ -1,6 +1,5 @@
-from telnetlib import X3PAD
 from PIL import Image, ImageDraw
-import os, re, random, sys
+import os, random, sys
 
 def draw_object(draw, object_shape, object_color, object_x, object_y, number):
     if object_shape == 'circle':

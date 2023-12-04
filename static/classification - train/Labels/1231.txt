@@ -1,0 +1,1 @@
+[0]	196	True	green	square	96	100	0
