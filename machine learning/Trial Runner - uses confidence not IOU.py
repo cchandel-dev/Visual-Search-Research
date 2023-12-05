@@ -2,7 +2,9 @@ import os, torch, math, time, glob
 from ultralytics import YOLO, RTDETR, settings
 from datetime import datetime
 from ultralytics.utils.benchmarks import benchmark
-from pymongo.mongo_client import MongoClient
+from pymongo.mongo_client import 
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import load_img
 
 uri = "mongodb+srv://Brain3DVizMember:NmwJ5IYmUHDmaQNa@tinyurl-experimental.cuym0r0.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri)
@@ -11,29 +13,66 @@ ml_collection = db['machine-learning']
 
 class TrialRunner:
     def __init__(self):
-        self.model_folder = 'C:\\Users\\cchan\\Downloads\\object detection models'
-        # Filter to keep only image files (you can modify this condition based on your file types)
-        self.model_paths = os.listdir(self.model_folder)
-        self.test_data_path = 'C:\\Users\\cchan\\Visual-Search-Research\\static\\object-detection'
-        self.test_images_paths = os.listdir(os.path.join(self.test_data_path, "images"))
+        self.object_detection_models_folder = 'C:\\Users\\cchan\\Downloads\\object detection models'
+        self.classification_models_folder = ''
+        self.object_detection_test_data_path = 'C:\\Users\\cchan\\Visual-Search-Research\\static\\object-detection'
+        self.classification_test_data_path = ''
         self.current_index = 0
         self.current_model = None
         self.user = None
         self.cpu = True
         self.device = None
-        self.timestamp = datetime.now()
+
+    def classification_loop(self):
+        self.model_paths = os.listdir(self.classification_models_folder)
+        self.test_images_paths = os.listdir(os.path.join(self.classification_test_data_path, "images"))
+        for model_path in self.model_paths:
+            model_metrics = {}
+            model_metrics['model_name'] = model_path.split(' ')[0]
+            model_metrics['num_epochs'] = int(model_path.split(' ')[1])
+            # fill out the current model
+            self.current_model =  tf.keras.models.load_model(os.path.join(self.classification_models_folder, model_path)) 
+            # let's assume they are already trained.
+            for test_image_path in self.test_images_paths:
+                # let's say we are happy with these parameters as our input
+                image = load_img(os.path.join(self.classification_test_data_path, "images", test_image_path))
+                label_path = os.path.join(self.classification_test_data_path, "labels", test_image_path[:-4] + '.txt')
+                image_metrics = {}
+                with open(label_path, 'r') as file:
+                    for line in file:
+                        annotations = line.split()
+                        image_metrics['target_present'] = int(annotations[0][1])
+                        image_metrics["num_shapes"] = int(annotations[1])
+                        image_metrics["conjunction"] = str(annotations[2]) == 'True'
+                        image_metrics["target_color"] = annotations[3]
+                        image_metrics["target_shape"] = annotations[4]
+                        image_metrics["num_green_circle"] = annotations[5]
+                        image_metrics["num_red_square"] = annotations[6]
+                        image_metrics["num_green_square"] = annotations[7]
+                results = self.current_model.predict(image)
+                # Dynamically get the decode prediction functions
+                model_fn = getattr(tf.keras.applications, model_metrics['model_name'], 'decode_predictions')
+                predictions = model_fn(results, top = 1)
+                prediction_metrics = {}
+                prediction_metrics['class_prediction'] = predictions[0][0]
+                prediction_metrics['class_prediction_correct'] = predictions[0][0] == image_metrics['target_present']
+                prediction_metrics['class_prediction_confidence'] = predictions[0][2]
+                msg = {**prediction_metrics, **image_metrics, **model_metrics}
+                ml_collection.insert_one(msg)
 
     def object_detection_loop(self):
+        self.model_paths = os.listdir(self.object_detection_models_folder)
+        self.test_images_paths = os.listdir(os.path.join(self.object_detection_test_data_path, "images"))
         for model_path in self.model_paths:
             model_metrics = {}
             model_metrics['model_name'] = model_path.split(' ')[0]
             model_metrics['num_epochs'] = int(model_path.split(' ')[1])
             if model_metrics['model_name'][:4] == 'yolo':
                 model_metrics['one-stager'] = True
-                self.current_model = YOLO(os.path.join(self.model_folder, model_path, 'weights', 'best.pt'))
+                self.current_model = YOLO(os.path.join(self.object_detection_models_folder, model_path, 'weights', 'best.pt'))
             else:
                 model_metrics['one-stager'] = False
-                self.current_model = RTDETR(os.path.join(self.model_folder, model_path, 'weights', 'best.pt'))
+                self.current_model = RTDETR(os.path.join(self.object_detection_models_folder, model_path, 'weights', 'best.pt'))
             model_metrics['parameters'] = self.current_model.info()[1]
             model_metrics['layers'] = self.current_model.info()[0]
             print(model_metrics['model_name'], self.current_model.info())
@@ -41,7 +80,7 @@ class TrialRunner:
             for test_image_path in self.test_images_paths:
                 # let's say we are happy with these parameters as our input
                 results = self.current_model.predict(   
-                                                        source = os.path.join(self.test_data_path,"images", test_image_path), # might need the full path here
+                                                        source = os.path.join(self.object_detection_test_data_path,"images", test_image_path), # might need the full path here
                                                         device ='cpu', 
                                                         save = False,
                                                         imgsz = 640,
@@ -49,7 +88,7 @@ class TrialRunner:
                                                     )
                 # now let's figure out how accurate the prediction was and log anything of note that results might hold (ie inference speed, number of predictions per confidence range, etc.)
                 image_metrics = results.__getitem__(0).speed
-                label_folder = os.path.join(self.test_data_path, "labels")
+                label_folder = os.path.join(self.object_detection_test_data_path, "labels")
                 lines = ""
                 with open(os.path.join(label_folder, test_image_path[:-4]+".txt"), 'r') as lbls:
                     lines = lbls.readlines()
